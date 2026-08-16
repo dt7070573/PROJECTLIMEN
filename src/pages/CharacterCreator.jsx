@@ -54,10 +54,11 @@ const options = {
     ],
 }
 
-function CharacterCreator({ onBack }) {
+function CharacterCreator({ onBack, onComplete }) {
     const [selectedCategory, setSelectedCategory] = useState('hair')
 
     const [character, setCharacter] = useState({
+        name: '',
         gender: 0,
         skin: 0,
         hair: 0,
@@ -72,6 +73,40 @@ function CharacterCreator({ onBack }) {
             ...character,
             [selectedCategory]: index,
         })
+    }
+
+    const handleComplete = () => {
+        const savedCharacters =
+            JSON.parse(localStorage.getItem('characters')) || []
+
+        if (savedCharacters.length >= 5) {
+            alert('캐릭터는 최대 5개까지 만들 수 있습니다.')
+            return
+        }
+
+        if (character.name.trim() === '') {
+            alert('캐릭터 이름을 입력해주세요.')
+            return
+        }
+
+        const newCharacter = {
+            ...character,
+            id: Date.now(),
+        }
+
+        const updatedCharacters = [
+            ...savedCharacters,
+            newCharacter,
+        ]
+
+        localStorage.setItem(
+            'characters',
+            JSON.stringify(updatedCharacters)
+        )
+
+        alert('캐릭터가 생성되었습니다.')
+
+        onComplete()
     }
 
     const currentOptions = options[selectedCategory]
@@ -124,6 +159,18 @@ function CharacterCreator({ onBack }) {
                     </div>
                 </div>
 
+                <input
+                    type="text"
+                    placeholder="캐릭터 이름"
+                    value={character.name}
+                    onChange={(e) =>
+                        setCharacter({
+                            ...character,
+                            name: e.target.value,
+                        })
+                    }
+                />
+
                 <div className="character-info">
                     <span>헤어 {character.hair + 1}</span>
                     <span>눈 {character.eyes + 1}</span>
@@ -158,7 +205,10 @@ function CharacterCreator({ onBack }) {
                     ))}
                 </div>
 
-                <button className="complete-button">
+                <button
+                    className="complete-button"
+                    onClick={handleComplete}
+                >
                     캐릭터 완성
                 </button>
 
