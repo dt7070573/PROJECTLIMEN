@@ -1,0 +1,185 @@
+.creator-page {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 220px 1fr 360px;
+    background: #111318;
+    color: white;
+    overflow: hidden;
+}
+
+
+/* =========================
+   왼쪽 카테고리
+========================= */
+
+.category-panel {
+    padding: 32px 20px;
+    background: #171a21;
+    border-right: 1px solid #333842;
+}
+
+    .category-panel h2 {
+        margin-top: 0;
+        margin-bottom: 24px;
+    }
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.category-button {
+    width: 100%;
+    padding: 14px 16px;
+    border: none;
+    background: transparent;
+    color: #aeb4c0;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+    .category-button:hover {
+        background: #242832;
+        color: white;
+    }
+
+    .category-button.active {
+        background: #303642;
+        color: white;
+    }
+
+
+/* =========================
+   중앙 캐릭터
+========================= */
+
+.character-preview-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+}
+
+    .character-preview-panel h1 {
+        margin: 0;
+        margin-bottom: 30px;
+        font-size: 24px;
+    }
+
+.character-preview {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.character-placeholder {
+    width: 320px;
+    height: 520px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #434957;
+    background: #1b1e25;
+    color: #747b88;
+    font-size: 24px;
+    text-align: center;
+}
+
+.character-info {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    color: #868e9e;
+}
+
+
+/* =========================
+   오른쪽 옵션
+========================= */
+
+.option-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 32px 24px;
+    background: #171a21;
+    border-left: 1px solid #333842;
+
+    display: flex;
+    flex-direction: column;
+}
+
+    .option-panel h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+.option-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    overflow-y: auto;
+}
+
+.option-button {
+    padding: 8px;
+    border: 1px solid #393f4b;
+    background: #20242c;
+    color: white;
+    cursor: pointer;
+}
+
+    .option-button:hover {
+        border-color: #7d8799;
+    }
+
+    .option-button.active {
+        border-color: white;
+    }
+
+.option-thumbnail {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    background: #303641;
+    color: #828a99;
+    font-size: 22px;
+}
+
+.option-button span {
+    font-size: 12px;
+}
+
+.complete-button {
+    margin-top: auto;
+    padding: 16px;
+    border: none;
+    background: white;
+    color: #111318;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.back-button {
+    margin-top: auto;
+    padding: 14px 16px;
+    border: 1px solid #393f4b;
+    background: transparent;
+    color: white;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+    .back-button:hover {
+        background: #242832;
+    }

@@ -1,12 +1,18 @@
-﻿function App() {
+﻿import { useState } from 'react'
+import Home from './pages/Home.jsx'
+import CharacterCreator from './pages/CharacterCreator.jsx'
+
+function App() {
+    const [page, setPage] = useState('home')
+
+    if (page === 'creator') {
+        return (<CharacterCreator
+            onBack={() => setPage('home')}
+        />
+        )
+    }
     return (
-        <div>
-            <h1>WebProjectLimen</h1>
-
-            <p>캐릭터 월드 프로젝트</p>
-
-            <button>캐릭터 만들기</button>
-        </div>
+        <Home onStart={() => setPage('creator')} />
     )
 }
 
