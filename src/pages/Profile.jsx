@@ -4,6 +4,8 @@ import './Profile.css'
 function Profile({
     characterId,
     onBack,
+    onDelete,
+    onEdit,
 }) {
     const [character] = useState(() => {
         const savedCharacters =
@@ -56,7 +58,14 @@ function Profile({
 
             </div>
 
-        </div>
+            <button onClick={() => onEdit(character.id)}>
+                캐릭터 수정
+            </button>
+
+                <button onClick={() => onDelete(character.id)}>
+                    캐릭터 삭제
+                </button>
+        </div >
     )
 }
 

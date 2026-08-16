@@ -54,18 +54,41 @@ const options = {
     ],
 }
 
-function CharacterCreator({ onBack, onComplete }) {
+function CharacterCreator({
+    onBack,
+    onComplete,
+    editingCharacterId
+})
+{
     const [selectedCategory, setSelectedCategory] = useState('hair')
 
-    const [character, setCharacter] = useState({
-        name: '',
-        gender: 0,
-        skin: 0,
-        hair: 0,
-        eyes: 0,
-        mouth: 0,
-        clothes: 0,
-        accessory: 0,
+    const [character, setCharacter] = useState(() => {
+
+        if (editingCharacterId !== null) {
+            const savedCharacters =
+                JSON.parse(localStorage.getItem('characters')) || []
+
+            const existingCharacter =
+                savedCharacters.find(
+                    character =>
+                        character.id === editingCharacterId
+                )
+
+            if (existingCharacter) {
+                return existingCharacter
+            }
+        }
+
+        return {
+            name: '',
+            gender: 0,
+            skin: 0,
+            hair: 0,
+            eyes: 0,
+            mouth: 0,
+            clothes: 0,
+            accessory: 0,
+        }
     })
 
     const handleOptionSelect = (index) => {
@@ -79,13 +102,44 @@ function CharacterCreator({ onBack, onComplete }) {
         const savedCharacters =
             JSON.parse(localStorage.getItem('characters')) || []
 
-        if (savedCharacters.length >= 5) {
-            alert('캐릭터는 최대 5개까지 만들 수 있습니다.')
+        if (character.name.trim() === '') {
+            alert('캐릭터 이름을 입력해주세요.')
             return
         }
 
-        if (character.name.trim() === '') {
-            alert('캐릭터 이름을 입력해주세요.')
+
+        // 기존 캐릭터 수정
+        if (editingCharacterId !== null) {
+
+            const updatedCharacters =
+                savedCharacters.map(savedCharacter => {
+
+                    if (savedCharacter.id === editingCharacterId) {
+                        return {
+                            ...character,
+                            id: editingCharacterId,
+                        }
+                    }
+
+                    return savedCharacter
+                })
+
+            localStorage.setItem(
+                'characters',
+                JSON.stringify(updatedCharacters)
+            )
+
+            alert('캐릭터가 수정되었습니다.')
+
+            onComplete()
+
+            return
+        }
+
+
+        // 신규 캐릭터 생성
+        if (savedCharacters.length >= 5) {
+            alert('캐릭터는 최대 5개까지 만들 수 있습니다.')
             return
         }
 
