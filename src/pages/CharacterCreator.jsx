@@ -2,6 +2,17 @@ import { useState } from 'react'
 import './CharacterCreator.css'
 import Avatar from '../components/Avatar.jsx'
 
+import { Button } from "@/components/ui/button"
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
+
 const categories = [
     { id: 'gender', label: '성별' },
     { id: 'skin', label: '피부색' },
@@ -66,8 +77,7 @@ function CharacterCreator({
     onBack,
     onComplete,
     editingCharacterId
-})
-{
+}) {
     const [selectedCategory, setSelectedCategory] = useState('hair')
 
     const [character, setCharacter] = useState(() => {
@@ -83,18 +93,7 @@ function CharacterCreator({
                 )
 
             if (existingCharacter) {
-                return {
-                    name: '',
-                    gender: 0,
-                    skin: 0,
-                    hair: 0,
-                    eyes: 0,
-                    mouth: 0,
-                    clothes: 0,
-                    accessory: 0,
-                    glasses: 0,
-                    ...existingCharacter,
-                }
+                return existingCharacter
             }
         }
 
@@ -107,7 +106,13 @@ function CharacterCreator({
             mouth: 0,
             clothes: 0,
             accessory: 0,
-            glasses: 0
+            glasses: 0,
+
+            hp: 100,
+            food: 0,
+            credit: 0,
+
+            inventory: [],
         }
     })
 
@@ -127,10 +132,7 @@ function CharacterCreator({
             return
         }
 
-
-        // 기존 캐릭터 수정
         if (editingCharacterId !== null) {
-
             const updatedCharacters =
                 savedCharacters.map(savedCharacter => {
 
@@ -156,8 +158,6 @@ function CharacterCreator({
             return
         }
 
-
-        // 신규 캐릭터 생성
         if (savedCharacters.length >= 5) {
             alert('캐릭터는 최대 5개까지 만들 수 있습니다.')
             return
@@ -186,102 +186,180 @@ function CharacterCreator({
     const currentOptions = options[selectedCategory]
 
     const selectedCategoryLabel =
-        categories.find(category => category.id === selectedCategory)?.label
+        categories.find(
+            category => category.id === selectedCategory
+        )?.label
 
     return (
         <div className="creator-page">
 
             {/* 왼쪽 대분류 */}
-            <aside className="category-panel">
-                <h2>외형 설정</h2>
+            <Card className="category-panel">
 
-                <div className="category-list">
-                    {categories.map(category => (
-                        <button
-                            key={category.id}
-                            className={
-                                selectedCategory === category.id
-                                    ? 'category-button active'
-                                    : 'category-button'
-                            }
-                            onClick={() => setSelectedCategory(category.id)}
-                        >
-                            {category.label}
-                        </button>
-                    ))}
-                </div>
+                <CardHeader>
+                    <CardTitle>
+                        외형 설정
+                    </CardTitle>
+                </CardHeader>
 
-                <button
-                    className="back-button"
-                    onClick={onBack}
-                >
-                    ← HOME
-                </button>
-            </aside>
+                <CardContent className="space-y-4">
+
+                    <div className="category-list">
+
+                        {categories.map(category => (
+
+                            <Button
+                                key={category.id}
+                                variant={
+                                    selectedCategory === category.id
+                                        ? "default"
+                                        : "ghost"
+                                }
+                                className="category-button w-full justify-start"
+                                onClick={() =>
+                                    setSelectedCategory(category.id)
+                                }
+                            >
+                                {category.label}
+                            </Button>
+
+                        ))}
+
+                    </div>
+
+                    <Separator />
+
+                    <Button
+                        variant="outline"
+                        className="back-button w-full"
+                        onClick={onBack}
+                    >
+                        ← HOME
+                    </Button>
+
+                </CardContent>
+
+            </Card>
 
 
             {/* 중앙 캐릭터 */}
-            <main className="character-preview-panel">
+            <Card className="character-preview-panel">
 
-                <h1>캐릭터 생성</h1>
-                <div className="character-preview">
-                    <Avatar character={character} />
-                </div>
+                <CardHeader className="w-full items-center text-center">
+                    <CardTitle className="text-2xl whitespace-nowrap">
+                        캐릭터 생성
+                    </CardTitle>
+                </CardHeader>
 
-                <input
-                    type="text"
-                    placeholder="캐릭터 이름"
-                    value={character.name}
-                    onChange={(e) =>
-                        setCharacter({
-                            ...character,
-                            name: e.target.value,
-                        })
-                    }
-                />
+                <CardContent className="space-y-5">
 
-                <div className="character-info">
-                    <span>헤어 {character.hair + 1}</span>
-                    <span>눈 {character.eyes + 1}</span>
-                    <span>옷 {character.clothes + 1}</span>
-                </div>
+                    <div className="character-preview">
+                        <Avatar character={character} />
+                    </div>
 
-            </main>
+                    <Input
+                        type="text"
+                        placeholder="캐릭터 이름"
+                        value={character.name}
+                        onChange={(e) =>
+                            setCharacter({
+                                ...character,
+                                name: e.target.value,
+                            })
+                        }
+                    />
+
+                    <Separator />
+
+                    <div className="character-info flex flex-wrap gap-2">
+
+                        <Badge variant="secondary">
+                            헤어 {character.hair + 1}
+                        </Badge>
+
+                        <Badge variant="secondary">
+                            눈 {character.eyes + 1}
+                        </Badge>
+
+                        <Badge variant="secondary">
+                            옷 {character.clothes + 1}
+                        </Badge>
+
+                    </div>
+
+                </CardContent>
+
+            </Card>
 
 
             {/* 오른쪽 상세 선택 */}
-            <aside className="option-panel">
+            <Card className="option-panel">
 
-                <h2>{selectedCategoryLabel}</h2>
+                <CardHeader>
 
-                <div className="option-grid">
-                    {currentOptions.map((option, index) => (
-                        <button
-                            key={index}
-                            className={
+                    <div className="flex items-center justify-between">
+
+                        <CardTitle>
+                            {selectedCategoryLabel}
+                        </CardTitle>
+
+                        <Badge variant="outline">
+                            {currentOptions.length}
+                        </Badge>
+
+                    </div>
+
+                </CardHeader>
+
+                <CardContent className="space-y-5">
+
+                    <div className="option-grid">
+
+                        {currentOptions.map((option, index) => {
+
+                            const isSelected =
                                 character[selectedCategory] === index
-                                    ? 'option-button active'
-                                    : 'option-button'
-                            }
-                            onClick={() => handleOptionSelect(index)}
-                        >
-                            <div className="option-thumbnail">
-                                {index + 1}
-                            </div>
 
-                            <span>{option}</span>
-                        </button>
-                    ))}
-                </div>
+                            return (
+                                <Button
+                                    key={index}
+                                    variant={
+                                        isSelected
+                                            ? "default"
+                                            : "outline"
+                                    }
+                                    className="option-button h-auto flex-col gap-2 p-3"
+                                    onClick={() =>
+                                        handleOptionSelect(index)
+                                    }
+                                >
+                                    <div className="option-thumbnail">
+                                        {index + 1}
+                                    </div>
 
-                <button
-                    className="complete-button"
-                    onClick={handleComplete}
-                >
-                    캐릭터 완성
-                </button>
+                                    <span>
+                                        {option}
+                                    </span>
 
-            </aside>
+                                </Button>
+                            )
+                        })}
+
+                    </div>
+
+                    <Separator />
+
+                    <Button
+                        className="complete-button w-full"
+                        size="lg"
+                        onClick={handleComplete}
+                    >
+                        캐릭터 완성
+                    </Button>
+
+                </CardContent>
+
+            </Card>
 
         </div>
     )

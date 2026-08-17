@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import items from '../data/items.js'
 
 const dailyEvents = [
     {
@@ -12,19 +13,65 @@ const dailyEvents = [
                 text: '문을 연다',
 
                 results: [
-                    '안에는 지친 생존자가 있었다. 그는 감사의 인사를 남기고 떠났다.',
-                    '문을 여는 순간 숨어 있던 약탈자가 달려들었다. 간신히 도망쳤다.',
-                    '아무도 없었다. 대신 바닥에서 오래된 가방 하나를 발견했다.',
-                ],
+                    {
+                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
+                        reward: {
+                            food: 2,
+                            credit: 0,
+                            hp: 0,
+                        },
+                    },
+
+                    {
+                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
+                        reward: {
+                            food: 0,
+                            credit: 0,
+                            hp: -15,
+                        },
+                    },
+
+                    {
+                        text: '낡은 가방 안에서 크레딧을 발견했다.',
+                        reward: {
+                            food: 0,
+                            credit: 20,
+                            hp: 0,
+                        },
+                    },
+                ]
             },
 
             {
                 text: '무시한다',
 
                 results: [
-                    '당신은 인기척을 무시하고 자리를 떠났다.',
-                    '한참 뒤 건물 안에서 총성이 들렸다.',
-                    '아무 일도 일어나지 않았다.',
+                    {
+                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
+                        reward: {
+                            food: 2,
+                            credit: 0,
+                            hp: 0,
+                        },
+                    },
+
+                    {
+                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
+                        reward: {
+                            food: 0,
+                            credit: 0,
+                            hp: -15,
+                        },
+                    },
+
+                    {
+                        text: '낡은 가방 안에서 크레딧을 발견했다.',
+                        reward: {
+                            food: 0,
+                            credit: 20,
+                            hp: 0,
+                        },
+                    },
                 ],
             },
         ],
@@ -41,9 +88,44 @@ const dailyEvents = [
                 text: '신호를 추적한다',
 
                 results: [
-                    '신호를 따라가자 버려진 통신 시설이 나타났다.',
-                    '신호는 갑자기 끊겼다. 누군가 일부러 송신을 중단한 것 같다.',
-                    '신호의 근원에서는 아무것도 발견하지 못했다.',
+                    {
+                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
+                        reward: {
+                            food: 2,
+                            credit: 0,
+                            hp: 0,
+                        },
+                        itemReward: {
+                            itemIdid: 'bandage',
+                            quantity: 1,
+                        },
+                    },
+
+                    {
+                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
+                        reward: {
+                            food: 0,
+                            credit: 0,
+                            hp: -15,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
+
+                    {
+                        text: '낡은 가방 안에서 크레딧을 발견했다.',
+                        reward: {
+                            food: 0,
+                            credit: 20,
+                            hp: 0,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
                 ],
             },
 
@@ -51,8 +133,44 @@ const dailyEvents = [
                 text: '통신기를 끈다',
 
                 results: [
-                    '위험을 감수하지 않기로 했다. 조용히 이동을 계속했다.',
-                    '통신기를 끄기 직전, 좌표 하나가 화면에 나타났다.',
+                    {
+                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
+                        reward: {
+                            food: 2,
+                            credit: 0,
+                            hp: 0,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
+
+                    {
+                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
+                        reward: {
+                            food: 0,
+                            credit: 0,
+                            hp: -15,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
+
+                    {
+                        text: '낡은 가방 안에서 크레딧을 발견했다.',
+                        reward: {
+                            food: 0,
+                            credit: 20,
+                            hp: 0,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
                 ],
             },
         ],
@@ -69,9 +187,44 @@ const dailyEvents = [
                 text: '상자를 조사한다',
 
                 results: [
-                    '상자 안에는 아직 사용할 수 있는 물자가 남아 있었다.',
-                    '상자는 완전히 비어 있었다.',
-                    '상자를 건드리는 순간 경보음이 울리기 시작했다.',
+                    {
+                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
+                        reward: {
+                            food: 2,
+                            credit: 0,
+                            hp: 0,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
+
+                    {
+                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
+                        reward: {
+                            food: 0,
+                            credit: 0,
+                            hp: -15,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
+
+                    {
+                        text: '낡은 가방 안에서 크레딧을 발견했다.',
+                        reward: {
+                            food: 0,
+                            credit: 20,
+                            hp: 0,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
                 ],
             },
 
@@ -79,8 +232,44 @@ const dailyEvents = [
                 text: '그냥 지나간다',
 
                 results: [
-                    '수상한 물건에는 손대지 않는 편이 낫다.',
-                    '몇 걸음 지나자 뒤에서 무언가 움직이는 소리가 들렸다.',
+                    {
+                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
+                        reward: {
+                            food: 2,
+                            credit: 0,
+                            hp: 0,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
+
+                    {
+                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
+                        reward: {
+                            food: 0,
+                            credit: 0,
+                            hp: -15,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
+
+                    {
+                        text: '낡은 가방 안에서 크레딧을 발견했다.',
+                        reward: {
+                            food: 0,
+                            credit: 20,
+                            hp: 0,
+                        },
+                        itemReward: {
+                            itemId: 'bandage',
+                            quantity: 1,
+                        },
+                    },
                 ],
             },
         ],
@@ -89,6 +278,41 @@ const dailyEvents = [
 
 function getRandomIndex(length) {
     return Math.floor(Math.random() * length)
+}
+
+function addItemToInventory(inventory, itemReward) {
+    if (!itemReward) {
+        return inventory
+    }
+
+    const existingItem =
+        inventory.find(
+            item => item.itemId === itemReward.itemId
+        )
+
+    if (existingItem) {
+        return inventory.map(item => {
+
+            if (item.itemId === itemReward.itemId) {
+                return {
+                    ...item,
+                    quantity:
+                        item.quantity +
+                        itemReward.quantity,
+                }
+            }
+
+            return item
+        })
+    }
+
+    return [
+        ...inventory,
+        {
+            itemId: itemReward.itemId,
+            quantity: itemReward.quantity,
+        },
+    ]
 }
 
 function Daily({
@@ -130,28 +354,113 @@ function Daily({
     }
 
     const selectChoice = (choice) => {
+
         const randomResultIndex =
             getRandomIndex(choice.results.length)
 
-        const resultText =
+        const selectedResult =
             choice.results[randomResultIndex]
+
+
+        const reward = selectedResult.reward ?? {
+            hp: 0,
+            food: 0,
+            credit: 0,
+        }
+
+
+        const itemReward =
+            selectedResult.itemReward ?? null
+
+
+        // =========================
+        // 캐릭터 데이터 갱신
+        // =========================
+
+        const savedCharacters =
+            JSON.parse(
+                localStorage.getItem('characters')
+            ) || []
+
+
+        const updatedCharacters =
+            savedCharacters.map(character => {
+
+                if (character.id !== characterId) {
+                    return character
+                }
+
+
+                const currentInventory =
+                    character.inventory ?? []
+
+
+                const updatedInventory =
+                    addItemToInventory(
+                        currentInventory,
+                        itemReward
+                    )
+
+
+                return {
+                    ...character,
+
+                    hp: Math.max(
+                        0,
+                        (character.hp ?? 100) +
+                        (reward.hp ?? 0)
+                    ),
+
+                    food:
+                        (character.food ?? 0) +
+                        (reward.food ?? 0),
+
+                    credit:
+                        (character.credit ?? 0) +
+                        (reward.credit ?? 0),
+
+                    inventory: updatedInventory,
+                }
+            })
+
+
+        localStorage.setItem(
+            'characters',
+            JSON.stringify(updatedCharacters)
+        )
+
+
+        // =========================
+        // Daily 결과 저장
+        // =========================
 
         const result = {
             date: today,
 
             eventId: currentEvent.id,
             eventTitle: currentEvent.title,
-            eventDescription: currentEvent.description,
+            eventDescription:
+                currentEvent.description,
 
             choice: choice.text,
 
-            result: resultText,
+            result: selectedResult.text,
+
+            reward: {
+                hp: reward.hp ?? 0,
+                food: reward.food ?? 0,
+                credit: reward.credit ?? 0,
+            },
+
+            itemReward: itemReward,
         }
+
 
         localStorage.setItem(
             storageKey,
             JSON.stringify(result)
         )
+
 
         setDailyResult(result)
         setCurrentEvent(null)
@@ -244,6 +553,55 @@ function Daily({
                     <p>
                         {dailyResult.result}
                     </p>
+
+                    <div className="daily-reward">
+
+                        <h3>변화</h3>
+
+                        {(dailyResult.reward?.hp ?? 0) !== 0 && (
+                            <p>
+                                HP
+                                {' '}
+                                {(dailyResult.reward?.hp ?? 0) > 0 ? '+' : ''}
+                                {dailyResult.reward?.hp}
+                            </p>
+                        )}
+
+                        {(dailyResult.reward?.food ?? 0) !== 0 && (
+                            <p>
+                                FOOD
+                                {' '}
+                                {(dailyResult.reward?.food ?? 0) > 0 ? '+' : ''}
+                                {dailyResult.reward?.food}
+                            </p>
+                        )}
+
+                        {(dailyResult.reward?.credit ?? 0) !== 0 && (
+                            <p>
+                                CREDIT
+                                {' '}
+                                {(dailyResult.reward?.credit ?? 0) > 0 ? '+' : ''}
+                                {dailyResult.reward?.credit}
+                            </p>
+                        )}
+
+                        {dailyResult.itemReward && (
+
+                            <div className="daily-item-reward">
+
+                                <h3>획득 아이템</h3>
+
+                                <p>
+                                    {items[dailyResult.itemReward.itemId]?.name}
+                                    {' ×'}
+                                    {dailyResult.itemReward.quantity}
+                                </p>
+
+                            </div>
+
+                        )}
+
+                    </div>
 
                     <p>
                         오늘의 활동을 완료했습니다.

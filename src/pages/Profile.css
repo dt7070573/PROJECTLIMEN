@@ -1,17 +1,22 @@
 .profile-page {
     min-height: 100vh;
-    background: #111318;
-    color: white;
+    background: var(--background);
+    color: var(--foreground);
     padding: 40px;
 }
 
 .profile-back-button {
     padding: 12px 18px;
-    border: 1px solid #3a404b;
+    border: 1px solid var(--border);
     background: transparent;
-    color: white;
+    color: var(--foreground);
     cursor: pointer;
 }
+
+    .profile-back-button:hover {
+        background: var(--accent);
+        color: var(--accent-foreground);
+    }
 
 .profile-character {
     max-width: 500px;
@@ -29,5 +34,94 @@
 
 .profile-data {
     margin-top: 20px;
-    color: #9da4af;
+    color: var(--muted-foreground);
+}
+
+.profile-inventory {
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto 0;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.inventory-slot {
+    position: relative;
+    height: 50px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--foreground);
+    cursor: pointer;
+}
+
+    .inventory-slot:hover {
+        background: var(--accent);
+        border-color: var(--ring);
+    }
+
+    .inventory-slot.active {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border-color: var(--primary);
+    }
+
+.inventory-slot-name {
+    display: block;
+    width: 100%;
+    font-size: 14px;
+    text-align: left;
+}
+
+.inventory-slot-quantity {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+}
+
+.item-detail {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--card-foreground);
+    text-align: left;
+}
+
+.item-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+    .item-detail-header h3 {
+        margin: 0;
+    }
+
+.item-rarity {
+    font-size: 12px;
+    color: var(--muted-foreground);
+}
+
+.item-type {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted-foreground);
+}
+
+.item-description {
+    margin-top: 20px;
+    color: var(--card-foreground);
+}
+
+.item-quantity {
+    margin-top: 20px;
+    color: var(--muted-foreground);
 }

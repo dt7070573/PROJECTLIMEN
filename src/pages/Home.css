@@ -4,8 +4,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #111318;
-    color: white;
+    background: var(--background);
+    color: var(--foreground);
 }
 
     .home-page h1 {
@@ -13,19 +13,24 @@
     }
 
     .home-page > p {
-        color: #8f96a3;
+        color: var(--muted-foreground);
     }
 
 .create-first-button {
     margin-top: 30px;
     padding: 16px 28px;
-    border: none;
-    background: white;
-    color: #111318;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: 1px solid var(--border);
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
 }
+
+    .create-first-button:hover {
+        background: var(--accent);
+        color: var(--accent-foreground);
+    }
 
 .character-list {
     display: flex;
@@ -33,19 +38,22 @@
     margin-top: 32px;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: stretch;
 }
 
 .character-card {
     width: 150px;
+    height: 170px;
     padding: 10px;
-    border: 1px solid #3a404b;
-    background: #1b1f27;
-    color: white;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--card-foreground);
     cursor: pointer;
 }
 
     .character-card:hover {
-        border-color: white;
+        background: var(--accent);
+        color: var(--accent-foreground);
     }
 
 .character-thumbnail {
@@ -57,19 +65,20 @@
 
 .add-character-button {
     width: 150px;
-    aspect-ratio: 1 / 1;
-    border: 1px dashed #555d6b;
-    background: transparent;
-    color: white;
+    height: 170px;
+    background: var(--card);
+    color: var(--muted-foreground);
+    border: 1px dashed var(--border);
     font-size: 42px;
     cursor: pointer;
 }
 
     .add-character-button:hover {
-        background: #1b1f27;
+        background: var(--accent);
+        color: var(--accent-foreground);
     }
 
 .character-count {
     margin-top: 20px;
-    color: #676e79;
+    color: var(--muted-foreground);
 }
