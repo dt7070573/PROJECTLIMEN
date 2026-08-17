@@ -1,5 +1,6 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import './CharacterCreator.css'
+import Avatar from '../components/Avatar.jsx'
 
 const categories = [
     { id: 'gender', label: '성별' },
@@ -9,6 +10,7 @@ const categories = [
     { id: 'mouth', label: '입' },
     { id: 'clothes', label: '옷' },
     { id: 'accessory', label: '악세사리' },
+    { id: 'glasses', label: '안경' },
 ]
 
 const options = {
@@ -52,6 +54,12 @@ const options = {
         '악세사리 03',
         '악세사리 04',
     ],
+    glasses: [
+        '안경 01',
+        '안경 02',
+        '안경 03',
+        '안경 04',
+    ]
 }
 
 function CharacterCreator({
@@ -75,7 +83,18 @@ function CharacterCreator({
                 )
 
             if (existingCharacter) {
-                return existingCharacter
+                return {
+                    name: '',
+                    gender: 0,
+                    skin: 0,
+                    hair: 0,
+                    eyes: 0,
+                    mouth: 0,
+                    clothes: 0,
+                    accessory: 0,
+                    glasses: 0,
+                    ...existingCharacter,
+                }
             }
         }
 
@@ -88,6 +107,7 @@ function CharacterCreator({
             mouth: 0,
             clothes: 0,
             accessory: 0,
+            glasses: 0
         }
     })
 
@@ -204,13 +224,8 @@ function CharacterCreator({
             <main className="character-preview-panel">
 
                 <h1>캐릭터 생성</h1>
-
                 <div className="character-preview">
-                    <div className="character-placeholder">
-                        캐릭터
-                        <br />
-                        미리보기
-                    </div>
+                    <Avatar character={character} />
                 </div>
 
                 <input

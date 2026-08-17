@@ -1,11 +1,13 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import './Profile.css'
+import Avatar from '../components/Avatar.jsx'
 
 function Profile({
     characterId,
     onBack,
     onDelete,
     onEdit,
+    onDaily,
 }) {
     const [character] = useState(() => {
         const savedCharacters =
@@ -41,7 +43,7 @@ function Profile({
             <div className="profile-character">
 
                 <div className="profile-thumbnail">
-                    캐릭터 미리보기
+                    <Avatar character={character} />
                 </div>
                 
                 <h1>{character.name}</h1>
@@ -62,9 +64,16 @@ function Profile({
                 캐릭터 수정
             </button>
 
-                <button onClick={() => onDelete(character.id)}>
+            <button onClick={() => onDelete(character.id)}>
                     캐릭터 삭제
-                </button>
+            </button>
+
+            <button
+                onClick={() => onDaily(character.id)}
+            >
+                오늘의 활동
+            </button>
+
         </div >
     )
 }

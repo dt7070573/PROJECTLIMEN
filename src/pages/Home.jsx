@@ -1,5 +1,6 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import './Home.css'
+import Avatar from '../components/Avatar.jsx'
 
 function Home({
     onCreateCharacter,
@@ -15,7 +16,7 @@ function Home({
             <h1>PROJECT LIMEN</h1>
 
             <p>
-                나만의 캐릭터를 만들고 세계에 들어가세요.
+                나만의 캐릭터를 만들고 PROJECT LIMEN에 참가하세요.
             </p>
 
             {characters.length === 0 ? (
@@ -42,7 +43,7 @@ function Home({
                         >
 
                             <div className="character-thumbnail">
-                                캐릭터
+                                <Avatar character={character} />
                             </div>
 
                             <span>

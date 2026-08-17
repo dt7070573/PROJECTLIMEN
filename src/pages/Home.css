@@ -49,14 +49,10 @@
     }
 
 .character-thumbnail {
+    position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-    background: #292e38;
-    color: #6e7684;
+    overflow: hidden;
 }
 
 .add-character-button {

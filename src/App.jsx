@@ -1,7 +1,8 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import Home from './pages/Home.jsx'
 import CharacterCreator from './pages/CharacterCreator.jsx'
 import Profile from './pages/Profile.jsx'
+import Daily from './pages/Daily.jsx'
 
 function App() {
     const [page, setPage] = useState('home')
@@ -53,6 +54,11 @@ function App() {
         setPage('creator')
     }
 
+    const goDaily = (characterId) => {
+        setSelectedCharacterId(characterId)
+        setPage('daily')
+    }
+
     if (page === 'creator') {
         return (<CharacterCreator
             onBack={goHome}
@@ -68,6 +74,16 @@ function App() {
                 onBack={goHome}
                 onDelete={deleteCharacter}
                 onEdit={editCharacter}
+                onDaily={goDaily}
+            />
+        )
+    }
+
+    if (page === 'daily') {
+        return (
+            <Daily
+                characterId={selectedCharacterId}
+                onBack={() => setPage('profile')}
             />
         )
     }
