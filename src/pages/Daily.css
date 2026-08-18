@@ -1,0 +1,251 @@
+.daily-page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 32px;
+    background: var(--background);
+    color: var(--foreground);
+}
+
+.daily-container {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.daily-back-button {
+    margin-bottom: 36px;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.daily-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+    .daily-heading h1 {
+        margin: 2px 0 0;
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+    }
+
+.daily-eyebrow,
+.daily-event-label,
+.daily-result-label {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--muted-foreground);
+}
+
+
+/* =========================
+   Start
+========================= */
+
+.daily-start-card {
+    min-height: 380px;
+}
+
+.daily-start-content {
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 48px;
+    text-align: center;
+}
+
+.daily-start-symbol {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--muted);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+}
+
+.daily-start-text {
+    max-width: 440px;
+}
+
+    .daily-start-text h2 {
+        margin: 0 0 8px;
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .daily-start-text p {
+        margin: 0;
+        line-height: 1.7;
+        color: var(--muted-foreground);
+    }
+
+
+/* =========================
+   Event
+========================= */
+
+.daily-event,
+.daily-result {
+    overflow: hidden;
+}
+
+.daily-event-title {
+    margin-top: 6px;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+}
+
+.daily-event-description {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted-foreground);
+}
+
+.daily-choice-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.daily-choice-label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+}
+
+.daily-choices {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.daily-choice-button {
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 18px;
+    white-space: normal;
+    text-align: left;
+}
+
+.daily-choice-number {
+    flex: 0 0 auto;
+    font-size: 11px;
+    color: var(--muted-foreground);
+}
+
+
+/* =========================
+   Result
+========================= */
+
+.daily-result-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.daily-selected-choice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--muted);
+}
+
+    .daily-selected-choice span {
+        font-size: 12px;
+        color: var(--muted-foreground);
+    }
+
+    .daily-selected-choice strong {
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+.daily-result-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+    .daily-result-text p:last-child {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.8;
+    }
+
+
+/* =========================
+   Reward
+========================= */
+
+.daily-reward {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.daily-reward-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.daily-complete-message {
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    background: var(--muted);
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted-foreground);
+}
+
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 640px) {
+
+    .daily-page {
+        padding: 20px;
+    }
+
+    .daily-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        .daily-heading h1 {
+            font-size: 28px;
+        }
+
+    .daily-start-content {
+        padding: 32px 20px;
+    }
+}

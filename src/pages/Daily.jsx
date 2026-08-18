@@ -1,5 +1,18 @@
 import { useState } from 'react'
 import items from '../data/items.js'
+import './Daily.css'
+
+import { Button } from '@/components/ui/button'
+
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card'
+
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 
 const dailyEvents = [
     {
@@ -96,7 +109,7 @@ const dailyEvents = [
                             hp: 0,
                         },
                         itemReward: {
-                            itemIdid: 'bandage',
+                            itemId: 'bandage',
                             quantity: 1,
                         },
                     },
@@ -354,13 +367,11 @@ function Daily({
     }
 
     const selectChoice = (choice) => {
-
         const randomResultIndex =
             getRandomIndex(choice.results.length)
 
         const selectedResult =
             choice.results[randomResultIndex]
-
 
         const reward = selectedResult.reward ?? {
             hp: 0,
@@ -368,15 +379,32 @@ function Daily({
             credit: 0,
         }
 
-
         const itemReward =
             selectedResult.itemReward ?? null
 
 
-        // =========================
-        // 캐릭터 데이터 갱신
-        // =========================
+        // 오늘의 최종 결과
+        const result = {
+            date: today,
 
+            eventId: currentEvent.id,
+            eventTitle: currentEvent.title,
+            eventDescription: currentEvent.description,
+
+            choice: choice.text,
+            result: selectedResult.text,
+
+            reward: {
+                hp: reward.hp ?? 0,
+                food: reward.food ?? 0,
+                credit: reward.credit ?? 0,
+            },
+
+            itemReward: itemReward,
+        }
+
+
+        // 캐릭터 불러오기
         const savedCharacters =
             JSON.parse(
                 localStorage.getItem('characters')
@@ -390,10 +418,8 @@ function Daily({
                     return character
                 }
 
-
                 const currentInventory =
                     character.inventory ?? []
-
 
                 const updatedInventory =
                     addItemToInventory(
@@ -401,6 +427,13 @@ function Daily({
                         itemReward
                     )
 
+                const currentActivityLog =
+                    character.activityLog ?? []
+
+                const updatedActivityLog = [
+                    result,
+                    ...currentActivityLog,
+                ]
 
                 return {
                     ...character,
@@ -420,6 +453,8 @@ function Daily({
                         (reward.credit ?? 0),
 
                     inventory: updatedInventory,
+
+                    activityLog: updatedActivityLog,
                 }
             })
 
@@ -429,38 +464,10 @@ function Daily({
             JSON.stringify(updatedCharacters)
         )
 
-
-        // =========================
-        // Daily 결과 저장
-        // =========================
-
-        const result = {
-            date: today,
-
-            eventId: currentEvent.id,
-            eventTitle: currentEvent.title,
-            eventDescription:
-                currentEvent.description,
-
-            choice: choice.text,
-
-            result: selectedResult.text,
-
-            reward: {
-                hp: reward.hp ?? 0,
-                food: reward.food ?? 0,
-                credit: reward.credit ?? 0,
-            },
-
-            itemReward: itemReward,
-        }
-
-
         localStorage.setItem(
             storageKey,
             JSON.stringify(result)
         )
-
 
         setDailyResult(result)
         setCurrentEvent(null)
@@ -469,147 +476,290 @@ function Daily({
     return (
         <div className="daily-page">
 
-            <button onClick={onBack}>
-                ← PROFILE
-            </button>
+            <div className="daily-container">
 
-            <h1>오늘의 활동</h1>
-
-
-            {/* 아직 오늘의 활동을 시작하지 않음 */}
-            {!dailyResult && !currentEvent && (
-
-                <div>
-                    <p>
-                        오늘 무슨 일이 일어날까요?
-                    </p>
-
-                    <button onClick={startDaily}>
-                        오늘의 탐색 시작
-                    </button>
-                </div>
-
-            )}
+                <Button
+                    variant="ghost"
+                    className="daily-back-button"
+                    onClick={onBack}
+                >
+                    ← PROFILE
+                </Button>
 
 
-            {/* 이벤트 발생 */}
-            {!dailyResult && currentEvent && (
+                <div className="daily-heading">
 
-                <div className="daily-event">
+                    <div>
+                        <p className="daily-eyebrow">
+                            DAILY ACTIVITY
+                        </p>
 
-                    <h2>
-                        {currentEvent.title}
-                    </h2>
-
-                    <p>
-                        {currentEvent.description}
-                    </p>
-
-                    <div className="daily-choices">
-
-                        {currentEvent.choices.map(
-                            (choice, index) => (
-
-                                <button
-                                    key={index}
-                                    onClick={() =>
-                                        selectChoice(choice)
-                                    }
-                                >
-                                    {choice.text}
-                                </button>
-
-                            )
-                        )}
-
+                        <h1>
+                            오늘의 활동
+                        </h1>
                     </div>
 
+                    <Badge variant="outline">
+                        {today}
+                    </Badge>
+
                 </div>
 
-            )}
 
+                {/* 아직 오늘의 활동을 시작하지 않음 */}
+                {!dailyResult && !currentEvent && (
 
-            {/* 오늘의 활동 완료 */}
-            {dailyResult && (
+                    <Card className="daily-start-card">
 
-                <div className="daily-result">
+                        <CardContent className="daily-start-content">
 
-                    <h2>
-                        {dailyResult.eventTitle}
-                    </h2>
+                            <div className="daily-start-symbol">
+                                ?
+                            </div>
 
-                    <p>
-                        {dailyResult.eventDescription}
-                    </p>
-
-                    <p>
-                        선택: {dailyResult.choice}
-                    </p>
-
-                    <hr />
-
-                    <h3>결과</h3>
-
-                    <p>
-                        {dailyResult.result}
-                    </p>
-
-                    <div className="daily-reward">
-
-                        <h3>변화</h3>
-
-                        {(dailyResult.reward?.hp ?? 0) !== 0 && (
-                            <p>
-                                HP
-                                {' '}
-                                {(dailyResult.reward?.hp ?? 0) > 0 ? '+' : ''}
-                                {dailyResult.reward?.hp}
-                            </p>
-                        )}
-
-                        {(dailyResult.reward?.food ?? 0) !== 0 && (
-                            <p>
-                                FOOD
-                                {' '}
-                                {(dailyResult.reward?.food ?? 0) > 0 ? '+' : ''}
-                                {dailyResult.reward?.food}
-                            </p>
-                        )}
-
-                        {(dailyResult.reward?.credit ?? 0) !== 0 && (
-                            <p>
-                                CREDIT
-                                {' '}
-                                {(dailyResult.reward?.credit ?? 0) > 0 ? '+' : ''}
-                                {dailyResult.reward?.credit}
-                            </p>
-                        )}
-
-                        {dailyResult.itemReward && (
-
-                            <div className="daily-item-reward">
-
-                                <h3>획득 아이템</h3>
+                            <div className="daily-start-text">
+                                <h2>
+                                    오늘은 어떤 일이 일어날까요?
+                                </h2>
 
                                 <p>
-                                    {items[dailyResult.itemReward.itemId]?.name}
-                                    {' ×'}
-                                    {dailyResult.itemReward.quantity}
+                                    활동을 시작하면 오늘의 사건이 결정됩니다.
+                                    결과는 하루 동안 유지됩니다.
+                                </p>
+                            </div>
+
+                            <Button
+                                size="lg"
+                                onClick={startDaily}
+                            >
+                                오늘의 활동 시작
+                            </Button>
+
+                        </CardContent>
+
+                    </Card>
+
+                )}
+
+
+                {/* 이벤트 발생 */}
+                {!dailyResult && currentEvent && (
+
+                    <Card className="daily-event">
+
+                        <CardHeader>
+
+                            <p className="daily-event-label">
+                                EVENT
+                            </p>
+
+                            <CardTitle className="daily-event-title">
+                                {currentEvent.title}
+                            </CardTitle>
+
+                        </CardHeader>
+
+
+                        <CardContent className="space-y-6">
+
+                            <p className="daily-event-description">
+                                {currentEvent.description}
+                            </p>
+
+                            <Separator />
+
+                            <div className="daily-choice-section">
+
+                                <p className="daily-choice-label">
+                                    행동을 선택하세요
+                                </p>
+
+                                <div className="daily-choices">
+
+                                    {currentEvent.choices.map(
+                                        (choice, index) => (
+
+                                            <Button
+                                                key={index}
+                                                variant="outline"
+                                                className="daily-choice-button"
+                                                onClick={() =>
+                                                    selectChoice(choice)
+                                                }
+                                            >
+                                                <span className="daily-choice-number">
+                                                    {String(index + 1).padStart(2, '0')}
+                                                </span>
+
+                                                <span>
+                                                    {choice.text}
+                                                </span>
+                                            </Button>
+
+                                        )
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </CardContent>
+
+                    </Card>
+
+                )}
+
+
+                {/* 오늘의 활동 완료 */}
+                {dailyResult && (
+
+                    <Card className="daily-result">
+
+                        <CardHeader>
+
+                            <div className="daily-result-header">
+
+                                <div>
+
+                                    <p className="daily-event-label">
+                                        ACTIVITY RESULT
+                                    </p>
+
+                                    <CardTitle className="daily-event-title">
+                                        {dailyResult.eventTitle}
+                                    </CardTitle>
+
+                                </div>
+
+                                <Badge variant="secondary">
+                                    완료
+                                </Badge>
+
+                            </div>
+
+                        </CardHeader>
+
+
+                        <CardContent className="space-y-6">
+
+                            <p className="daily-event-description">
+                                {dailyResult.eventDescription}
+                            </p>
+
+
+                            <div className="daily-selected-choice">
+
+                                <span>
+                                    선택
+                                </span>
+
+                                <strong>
+                                    {dailyResult.choice}
+                                </strong>
+
+                            </div>
+
+
+                            <Separator />
+
+
+                            <div className="daily-result-text">
+
+                                <p className="daily-result-label">
+                                    RESULT
+                                </p>
+
+                                <p>
+                                    {dailyResult.result}
                                 </p>
 
                             </div>
 
-                        )}
 
-                    </div>
+                            {(
+                                (dailyResult.reward?.hp ?? 0) !== 0 ||
+                                (dailyResult.reward?.food ?? 0) !== 0 ||
+                                (dailyResult.reward?.credit ?? 0) !== 0 ||
+                                dailyResult.itemReward
+                            ) && (
 
-                    <p>
-                        오늘의 활동을 완료했습니다.
-                    </p>
+                                    <>
+                                        <Separator />
 
-                </div>
+                                        <div className="daily-reward">
 
-            )}
+                                            <p className="daily-result-label">
+                                                변화
+                                            </p>
+
+                                            <div className="daily-reward-list">
+
+                                                {(dailyResult.reward?.hp ?? 0) !== 0 && (
+                                                    <Badge variant="outline">
+                                                        HP{' '}
+                                                        {(dailyResult.reward?.hp ?? 0) > 0
+                                                            ? '+'
+                                                            : ''}
+                                                        {dailyResult.reward?.hp}
+                                                    </Badge>
+                                                )}
+
+
+                                                {(dailyResult.reward?.food ?? 0) !== 0 && (
+                                                    <Badge variant="outline">
+                                                        FOOD{' '}
+                                                        {(dailyResult.reward?.food ?? 0) > 0
+                                                            ? '+'
+                                                            : ''}
+                                                        {dailyResult.reward?.food}
+                                                    </Badge>
+                                                )}
+
+
+                                                {(dailyResult.reward?.credit ?? 0) !== 0 && (
+                                                    <Badge variant="outline">
+                                                        CREDIT{' '}
+                                                        {(dailyResult.reward?.credit ?? 0) > 0
+                                                            ? '+'
+                                                            : ''}
+                                                        {dailyResult.reward?.credit}
+                                                    </Badge>
+                                                )}
+
+
+                                                {dailyResult.itemReward && (
+
+                                                    <Badge variant="secondary">
+                                                        {
+                                                            items[
+                                                                dailyResult.itemReward.itemId
+                                                            ]?.name
+                                                        }
+                                                        {' ×'}
+                                                        {dailyResult.itemReward.quantity}
+                                                    </Badge>
+
+                                                )}
+
+                                            </div>
+
+                                        </div>
+                                    </>
+
+                                )}
+
+
+                            <div className="daily-complete-message">
+                                오늘의 활동을 완료했습니다.
+                            </div>
+
+                        </CardContent>
+
+                    </Card>
+
+                )}
+
+            </div>
 
         </div>
     )

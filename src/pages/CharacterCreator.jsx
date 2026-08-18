@@ -99,6 +99,9 @@ function CharacterCreator({
 
         return {
             name: '',
+            age: '',
+            department: 'research',
+
             gender: 0,
             skin: 0,
             hair: 0,
@@ -113,6 +116,7 @@ function CharacterCreator({
             credit: 0,
 
             inventory: [],
+            activityLog: [],
         }
     })
 
@@ -257,17 +261,66 @@ function CharacterCreator({
                         <Avatar character={character} />
                     </div>
 
-                    <Input
-                        type="text"
-                        placeholder="캐릭터 이름"
-                        value={character.name}
-                        onChange={(e) =>
-                            setCharacter({
-                                ...character,
-                                name: e.target.value,
-                            })
-                        }
-                    />
+                    <div className="character-basic-info">
+
+                        <div className="creator-field">
+                            <label>이름</label>
+
+                            <input
+                                type="text"
+                                placeholder="캐릭터 이름"
+                                value={character.name}
+                                onChange={(e) =>
+                                    setCharacter({
+                                        ...character,
+                                        name: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+
+
+                        <div className="creator-field">
+                            <label>나이</label>
+
+                            <input
+                                type="number"
+                                min="1"
+                                max="999"
+                                placeholder="나이"
+                                value={character.age}
+                                onChange={(e) =>
+                                    setCharacter({
+                                        ...character,
+                                        age: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+
+
+                        <div className="creator-field">
+                            <label>소속</label>
+
+                            <select
+                                value={character.department}
+                                onChange={(e) =>
+                                    setCharacter({
+                                        ...character,
+                                        department: e.target.value,
+                                    })
+                                }
+                            >
+                                <option value="research">연구부</option>
+                                <option value="exploration">탐색부</option>
+                                <option value="security">보안부</option>
+                                <option value="engineering">공학부</option>
+                                <option value="office">사무부</option>
+                                <option value="medical">의료부</option>
+                            </select>
+                        </div>
+
+                    </div>
 
                     <Separator />
 

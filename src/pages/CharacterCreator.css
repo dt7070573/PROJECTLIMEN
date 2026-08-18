@@ -196,3 +196,44 @@
         background: var(--accent);
         color: var(--accent-foreground);
     }
+
+
+.character-basic-info {
+    width: 100%;
+    max-width: 400px;
+    display: grid;
+    grid-template-columns: 1fr 100px 1fr;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.creator-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+    .creator-field label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted-foreground);
+    }
+
+    .creator-field input,
+    .creator-field select {
+        width: 100%;
+        height: 38px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--background);
+        color: var(--foreground);
+        font-size: 14px;
+    }
+
+        .creator-field input:focus,
+        .creator-field select:focus {
+            outline: none;
+            border-color: var(--ring);
+            box-shadow: 0 0 0 1px var(--ring);
+        }

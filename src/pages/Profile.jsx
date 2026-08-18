@@ -133,10 +133,49 @@ function Profile({
                     </div>
 
 
-                    <div>
+                    <div className="profile-identity">
+
                         <h1 className="text-3xl font-semibold">
                             {character.name}
                         </h1>
+
+                        <div className="profile-meta">
+
+                            <span>
+                                {character.age
+                                    ? `${character.age}세`
+                                    : '나이 미설정'}
+                            </span>
+
+                            <span className="profile-meta-divider">
+                                /
+                            </span>
+
+                            <span>
+                                {character.gender === 0
+                                    ? '여성'
+                                    : '남성'}
+                            </span>
+
+                            <span className="profile-meta-divider">
+                                /
+                            </span>
+
+                            <Badge variant="secondary">
+                                {
+                                    {
+                                        research: '연구부',
+                                        exploration: '탐색부',
+                                        security: '보안부',
+                                        engineering: '공학부',
+                                        office: '사무부',
+                                        medical: '의료부',
+                                    }[character.department] ?? '소속 미설정'
+                                }
+                            </Badge>
+
+                        </div>
+
                     </div>
 
 
@@ -292,6 +331,57 @@ function Profile({
 
                     <Separator />
 
+                    <div className="activity-section">
+
+                        <h2>활동 기록</h2>
+
+                        {(character.activityLog ?? []).length === 0 ? (
+
+                            <p>아직 활동 기록이 없습니다.</p>
+
+                        ) : (
+
+                            <div className="activity-list">
+
+                                {(character.activityLog ?? []).map(
+                                    (activity, index) => (
+
+                                        <div
+                                            key={`${activity.date}-${index}`}
+                                            className="activity-card"
+                                        >
+
+                                            <div className="activity-card-header">
+
+                                                <span className="activity-date">
+                                                    {activity.date}
+                                                </span>
+
+                                                <span className="activity-title">
+                                                    {activity.eventTitle}
+                                                </span>
+
+                                            </div>
+
+                                            <p className="activity-choice">
+                                                선택 : {activity.choice}
+                                            </p>
+
+                                            <p className="activity-result">
+                                                {activity.result}
+                                            </p>
+
+                                        </div>
+
+                                    )
+                                )}
+
+                            </div>
+
+                        )}
+
+                    </div>
+
 
                     <Card className="profile-data">
 
@@ -303,10 +393,6 @@ function Profile({
 
 
                         <CardContent className="grid grid-cols-2 gap-3">
-
-                            <p>
-                                성별 : {character.gender + 1}
-                            </p>
 
                             <p>
                                 피부 : {character.skin + 1}
