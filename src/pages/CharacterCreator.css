@@ -14,7 +14,7 @@
 ========================= */
 
 .category-panel {
-    padding: 32px 20px;
+    padding: 80px 20px 32px;
     background: var(--card);
     color: var(--card-foreground);
     border-right: 1px solid var(--border);
@@ -179,20 +179,4 @@
         background: var(--accent);
         color: var(--accent-foreground);
         border-color: var(--accent);
-    }
-
-.back-button {
-    margin-top: auto;
-    padding: 14px 16px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--foreground);
-    text-align: left;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-    .back-button:hover {
-        background: var(--accent);
-        color: var(--accent-foreground);
     }

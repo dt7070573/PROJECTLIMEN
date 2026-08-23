@@ -193,6 +193,14 @@ function CharacterCreator({
     return (
         <div className="creator-page">
 
+            <Button
+                variant="outline"
+                className="page-back-button"
+                onClick={onBack}
+            >
+                ← HOME
+            </Button>
+
             {/* 왼쪽 대분류 */}
             <Card className="category-panel">
 
@@ -226,16 +234,6 @@ function CharacterCreator({
                         ))}
 
                     </div>
-
-                    <Separator />
-
-                    <Button
-                        variant="outline"
-                        className="back-button w-full"
-                        onClick={onBack}
-                    >
-                        ← HOME
-                    </Button>
 
                 </CardContent>
 

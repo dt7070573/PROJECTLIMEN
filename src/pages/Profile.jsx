@@ -102,9 +102,10 @@ function Profile({
 
                 <Button
                     variant="outline"
+                    className="page-back-button"
                     onClick={onBack}
                 >
-                    HOME
+                    ← HOME
                 </Button>
 
             </div>
@@ -117,7 +118,7 @@ function Profile({
 
             <Button
                 variant="ghost"
-                className="profile-back-button"
+                className="page-back-button"
                 onClick={onBack}
             >
                 ← HOME
@@ -340,35 +341,48 @@ function Profile({
                     <Separator />
 
 
-                    <div className="flex flex-wrap gap-3">
+                    <div className="profile-actions">
 
                         <Button
-                            onClick={() =>
-                                onEdit(character.id)
-                            }
-                        >
-                            캐릭터 수정
-                        </Button>
-
-
-                        <Button
-                            variant="destructive"
-                            onClick={() =>
-                                onDelete(character.id)
-                            }
-                        >
-                            캐릭터 삭제
-                        </Button>
-
-
-                        <Button
-                            variant="secondary"
+                            size="lg"
+                            className="daily-activity-button"
                             onClick={() =>
                                 onDaily(character.id)
                             }
                         >
-                            오늘의 활동
+                            <span className="daily-activity-label">
+                                오늘의 활동
+                            </span>
+
+                            <span className="daily-activity-description">
+                                오늘의 목표를 확인하고 탐사를 시작하세요
+                            </span>
                         </Button>
+
+
+                        <div className="profile-management-actions">
+
+                            <Button
+                                variant="outline"
+                                onClick={() =>
+                                    onEdit(character.id)
+                                }
+                            >
+                                캐릭터 수정
+                            </Button>
+
+
+                            <Button
+                                variant="destructive"
+                                onClick={() =>
+                                    onDelete(character.id)
+                                }
+                            >
+                                캐릭터 삭제
+                            </Button>
+
+
+                        </div>
 
                     </div>
 

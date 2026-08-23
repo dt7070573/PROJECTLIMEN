@@ -1,284 +1,15 @@
+import './Daily.css'
 import { useState } from 'react'
+
 import items from '../data/items.js'
+import explorationEvents from '../data/explorationEvents.js'
+import dailyTargets from '../data/dailyTargets.js'
 
-const dailyEvents = [
-    {
-        id: 'survivor',
-        title: '낯선 생존자',
-        description:
-            '폐건물 안에서 인기척이 들린다. 문 너머에서 누군가 도움을 요청하고 있다.',
+import {
+    getDailyTarget,
+    getRandomItem,
+} from '../data/explorationUtils.js'
 
-        choices: [
-            {
-                text: '문을 연다',
-
-                results: [
-                    {
-                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
-                        reward: {
-                            food: 2,
-                            credit: 0,
-                            hp: 0,
-                        },
-                    },
-
-                    {
-                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
-                        reward: {
-                            food: 0,
-                            credit: 0,
-                            hp: -15,
-                        },
-                    },
-
-                    {
-                        text: '낡은 가방 안에서 크레딧을 발견했다.',
-                        reward: {
-                            food: 0,
-                            credit: 20,
-                            hp: 0,
-                        },
-                    },
-                ]
-            },
-
-            {
-                text: '무시한다',
-
-                results: [
-                    {
-                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
-                        reward: {
-                            food: 2,
-                            credit: 0,
-                            hp: 0,
-                        },
-                    },
-
-                    {
-                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
-                        reward: {
-                            food: 0,
-                            credit: 0,
-                            hp: -15,
-                        },
-                    },
-
-                    {
-                        text: '낡은 가방 안에서 크레딧을 발견했다.',
-                        reward: {
-                            food: 0,
-                            credit: 20,
-                            hp: 0,
-                        },
-                    },
-                ],
-            },
-        ],
-    },
-
-    {
-        id: 'signal',
-        title: '이상 신호',
-        description:
-            '통신기에 정체불명의 신호가 잡힌다. 같은 메시지가 반복되고 있다.',
-
-        choices: [
-            {
-                text: '신호를 추적한다',
-
-                results: [
-                    {
-                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
-                        reward: {
-                            food: 2,
-                            credit: 0,
-                            hp: 0,
-                        },
-                        itemReward: {
-                            itemIdid: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-
-                    {
-                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
-                        reward: {
-                            food: 0,
-                            credit: 0,
-                            hp: -15,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-
-                    {
-                        text: '낡은 가방 안에서 크레딧을 발견했다.',
-                        reward: {
-                            food: 0,
-                            credit: 20,
-                            hp: 0,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-                ],
-            },
-
-            {
-                text: '통신기를 끈다',
-
-                results: [
-                    {
-                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
-                        reward: {
-                            food: 2,
-                            credit: 0,
-                            hp: 0,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-
-                    {
-                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
-                        reward: {
-                            food: 0,
-                            credit: 0,
-                            hp: -15,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-
-                    {
-                        text: '낡은 가방 안에서 크레딧을 발견했다.',
-                        reward: {
-                            food: 0,
-                            credit: 20,
-                            hp: 0,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-                ],
-            },
-        ],
-    },
-
-    {
-        id: 'supply',
-        title: '버려진 보급 상자',
-        description:
-            '길가에서 오래된 보급 상자를 발견했다. 자물쇠는 이미 부서져 있다.',
-
-        choices: [
-            {
-                text: '상자를 조사한다',
-
-                results: [
-                    {
-                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
-                        reward: {
-                            food: 2,
-                            credit: 0,
-                            hp: 0,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-
-                    {
-                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
-                        reward: {
-                            food: 0,
-                            credit: 0,
-                            hp: -15,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-
-                    {
-                        text: '낡은 가방 안에서 크레딧을 발견했다.',
-                        reward: {
-                            food: 0,
-                            credit: 20,
-                            hp: 0,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-                ],
-            },
-
-            {
-                text: '그냥 지나간다',
-
-                results: [
-                    {
-                        text: '안에는 지친 생존자가 있었다. 그는 식량을 조금 나눠주었다.',
-                        reward: {
-                            food: 2,
-                            credit: 0,
-                            hp: 0,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-
-                    {
-                        text: '문을 여는 순간 약탈자가 달려들었다. 간신히 도망쳤다.',
-                        reward: {
-                            food: 0,
-                            credit: 0,
-                            hp: -15,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-
-                    {
-                        text: '낡은 가방 안에서 크레딧을 발견했다.',
-                        reward: {
-                            food: 0,
-                            credit: 20,
-                            hp: 0,
-                        },
-                        itemReward: {
-                            itemId: 'bandage',
-                            quantity: 1,
-                        },
-                    },
-                ],
-            },
-        ],
-    },
-]
-
-function getRandomIndex(length) {
-    return Math.floor(Math.random() * length)
-}
 
 function addItemToInventory(inventory, itemReward) {
     if (!itemReward) {
@@ -315,62 +46,489 @@ function addItemToInventory(inventory, itemReward) {
     ]
 }
 
+
 function Daily({
     characterId,
     onBack,
+}) {
+    const today =
+        new Date().toLocaleDateString('en-CA')
+
+    const dailyTarget =
+        getDailyTarget(dailyTargets)
+
+    const dailyStorageKey =
+        `daily-${characterId}`
+
+    const explorationStorageKey =
+        `exploration-${characterId}`
+
+
+    // =========================
+    // 선택지 이벤트 대기 상태
+    // =========================
+
+const [
+    pendingChoiceEvent,
+    setPendingChoiceEvent,
+] = useState(() => {
+
+    const savedExploration =
+        JSON.parse(
+            localStorage.getItem(
+                explorationStorageKey
+            )
+        )
+
+    if (
+        savedExploration &&
+        savedExploration.date === today &&
+        savedExploration.currentEvent?.type === 'choice' &&
+        !savedExploration.currentEvent?.resultText
+    ) {
+        return savedExploration.currentEvent
+    }
+
+    return null
 })
-{
-    const today = new Date().toLocaleDateString('en-CA')
 
-    const storageKey = `daily-${characterId}`
 
-    const [dailyResult, setDailyResult] = useState(() => {
-        const savedResult =
-            JSON.parse(localStorage.getItem(storageKey))
+    // =========================
+    // 오늘의 최종 결과
+    // =========================
 
-        if (
-            savedResult &&
-            savedResult.date === today
-        ) {
-            return savedResult
-        }
+    const [dailyResult, setDailyResult] =
+        useState(() => {
 
-        return null
-    })
+            const savedResult =
+                JSON.parse(
+                    localStorage.getItem(
+                        dailyStorageKey
+                    )
+                )
 
-    const [currentEvent, setCurrentEvent] = useState(null)
+            if (
+                savedResult &&
+                savedResult.date === today
+            ) {
+                return savedResult
+            }
 
-    const startDaily = () => {
+            return null
+        })
+
+
+    // =========================
+    // 현재 탐사 상태
+    // =========================
+
+    const [exploration, setExploration] =
+        useState(() => {
+
+            const savedExploration =
+                JSON.parse(
+                    localStorage.getItem(
+                        explorationStorageKey
+                    )
+                )
+
+            if (
+                savedExploration &&
+                savedExploration.date === today &&
+                !savedExploration.finished
+            ) {
+                return savedExploration
+            }
+
+            return {
+                date: today,
+
+                started: false,
+                finished: false,
+
+                depth: 0,
+                sanity: 100,
+
+                currentEvent: null,
+
+                targetFound: false,
+            }
+        })
+
+
+    // =========================
+    // 탐사 상태 저장
+    // =========================
+
+    const saveExploration = (newState) => {
+
+        setExploration(newState)
+
+        localStorage.setItem(
+            explorationStorageKey,
+            JSON.stringify(newState)
+        )
+    }
+
+
+    // =========================
+    // 탐사 시작
+    // =========================
+
+    const startExploration = () => {
+
         if (dailyResult) {
             return
         }
 
-        const randomIndex =
-            getRandomIndex(dailyEvents.length)
+        const newState = {
+            ...exploration,
 
-        const event = dailyEvents[randomIndex]
+            started: true,
+            finished: false,
 
-        setCurrentEvent(event)
+            depth: 0,
+            sanity: 100,
+
+            currentEvent: null,
+
+            targetFound: false,
+        }
+
+        saveExploration(newState)
     }
 
-    const selectChoice = (choice) => {
 
-        const randomResultIndex =
-            getRandomIndex(choice.results.length)
+    // =========================
+    // 앞으로 나가기
+    // =========================
 
-        const selectedResult =
-            choice.results[randomResultIndex]
+    const moveForward = () => {
+
+        if (
+            !exploration.started ||
+            exploration.finished ||
+            pendingChoiceEvent
+        ) {
+            return
+        }
+
+        const nextDepth =
+            exploration.depth + 1
+
+        const event =
+            getRandomItem(explorationEvents)
 
 
-        const reward = selectedResult.reward ?? {
-            hp: 0,
-            food: 0,
-            credit: 0,
+        // =========================
+        // 선택지 이벤트
+        // =========================
+
+        if (event.type === 'choice') {
+
+            const nextState = {
+                ...exploration,
+
+                depth: nextDepth,
+
+                currentEvent: event,
+            }
+
+            saveExploration(nextState)
+
+            setPendingChoiceEvent(event)
+
+            return
         }
 
 
-        const itemReward =
-            selectedResult.itemReward ?? null
+        // =========================
+        // 일반 이벤트
+        // =========================
+
+        const nextSanity =
+            Math.max(
+                0,
+                exploration.sanity -
+                (event.sanityLoss ?? 0)
+            )
+
+
+        let targetFound =
+            exploration.targetFound
+
+
+        // =========================
+        // 목표물 발견 판정
+        // =========================
+
+        if (
+            !targetFound &&
+            nextDepth >= dailyTarget.minDepth
+        ) {
+            const depthBonus =
+                (
+                    nextDepth -
+                    dailyTarget.minDepth
+                ) * 0.08
+
+            const chance =
+                Math.min(
+                    0.15 + depthBonus,
+                    0.75
+                )
+
+            if (Math.random() < chance) {
+                targetFound = true
+            }
+        }
+
+
+        const nextState = {
+            ...exploration,
+
+            depth: nextDepth,
+            sanity: nextSanity,
+
+            currentEvent: event,
+
+            targetFound,
+        }
+
+
+        // =========================
+        // SANITY 0
+        // =========================
+
+        if (nextSanity <= 0) {
+
+            finishExploration(
+                nextState,
+                'collapse'
+            )
+
+            return
+        }
+
+
+        saveExploration(nextState)
+    }
+
+
+    // =========================
+    // 선택지 결과 처리
+    // =========================
+
+    const selectExplorationChoice = (choice) => {
+
+        const selectedResult =
+            getRandomItem(choice.results)
+
+        const sanityChange =
+            selectedResult.sanityChange ?? 0
+
+        const nextSanity =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    exploration.sanity +
+                    sanityChange
+                )
+            )
+
+
+        const resolvedEvent = {
+            ...pendingChoiceEvent,
+
+            resultText:
+                selectedResult.text,
+
+            sanityChange,
+        }
+
+
+        let targetFound =
+            exploration.targetFound
+
+
+        // 선택지 이벤트에서도
+        // 목표물 발견 조건 체크
+        if (
+            !targetFound &&
+            exploration.depth >=
+                dailyTarget.minDepth
+        ) {
+            const depthBonus =
+                (
+                    exploration.depth -
+                    dailyTarget.minDepth
+                ) * 0.08
+
+            const chance =
+                Math.min(
+                    0.15 + depthBonus,
+                    0.75
+                )
+
+            if (Math.random() < chance) {
+                targetFound = true
+            }
+        }
+
+
+        const nextState = {
+            ...exploration,
+
+            sanity: nextSanity,
+
+            currentEvent:
+                resolvedEvent,
+
+            targetFound,
+        }
+
+
+        // =========================
+        // 아이템 보상
+        // =========================
+
+        if (selectedResult.itemReward) {
+
+            const savedCharacters =
+                JSON.parse(
+                    localStorage.getItem(
+                        'characters'
+                    )
+                ) || []
+
+
+            const updatedCharacters =
+                savedCharacters.map(
+                    character => {
+
+                        if (
+                            character.id !==
+                            characterId
+                        ) {
+                            return character
+                        }
+
+                        return {
+                            ...character,
+
+                            inventory:
+                                addItemToInventory(
+                                    character.inventory ?? [],
+                                    selectedResult.itemReward
+                                ),
+                        }
+                    }
+                )
+
+
+            localStorage.setItem(
+                'characters',
+                JSON.stringify(
+                    updatedCharacters
+                )
+            )
+        }
+
+
+        setPendingChoiceEvent(null)
+
+
+        // =========================
+        // SANITY 0
+        // =========================
+
+        if (nextSanity <= 0) {
+
+            finishExploration(
+                nextState,
+                'collapse'
+            )
+
+            return
+        }
+
+
+        saveExploration(nextState)
+    }
+
+
+    // =========================
+    // 복귀
+    // =========================
+
+    const returnFromExploration = () => {
+
+        if (!exploration.started) {
+            return
+        }
+
+        const resultType =
+            exploration.targetFound
+                ? 'success'
+                : 'incomplete'
+
+        finishExploration(
+            exploration,
+            resultType
+        )
+    }
+
+
+    // =========================
+    // 탐사 종료
+    // =========================
+
+    const finishExploration = (
+        finalState,
+        resultType
+    ) => {
+
+        const success =
+            resultType === 'success'
+
+        const result = {
+            date: today,
+
+            type: resultType,
+
+            depth: finalState.depth,
+            sanity: finalState.sanity,
+
+            targetItemId:
+                dailyTarget.itemId,
+
+            targetFound:
+                finalState.targetFound,
+
+            success,
+
+            eventTitle:
+                success
+                    ? '목표물 회수'
+                    : resultType === 'collapse'
+                        ? '정신 붕괴'
+                        : '탐사 복귀',
+
+            choice:
+                success
+                    ? '목표물을 가지고 복귀'
+                    : resultType === 'collapse'
+                        ? '강제 종료'
+                        : '자진 복귀',
+
+            result:
+                success
+                    ? `${dailyTarget.name}을(를) 회수하고 무사히 복귀했다.`
+                    : resultType === 'collapse'
+                        ? `DEPTH ${finalState.depth}에서 이성치가 완전히 붕괴했다.`
+                        : `목표물을 발견하지 못한 채 DEPTH ${finalState.depth}에서 복귀했다.`,
+        }
 
 
         // =========================
@@ -379,244 +537,583 @@ function Daily({
 
         const savedCharacters =
             JSON.parse(
-                localStorage.getItem('characters')
+                localStorage.getItem(
+                    'characters'
+                )
             ) || []
 
 
         const updatedCharacters =
-            savedCharacters.map(character => {
+            savedCharacters.map(
+                character => {
 
-                if (character.id !== characterId) {
-                    return character
+                    if (
+                        character.id !==
+                        characterId
+                    ) {
+                        return character
+                    }
+
+
+                    let updatedInventory =
+                        character.inventory ?? []
+
+
+                    // 목표물 회수 성공 시
+                    // 인벤토리에 목표물 추가
+                    if (success) {
+
+                        updatedInventory =
+                            addItemToInventory(
+                                updatedInventory,
+                                {
+                                    itemId:
+                                        dailyTarget.itemId,
+
+                                    quantity: 1,
+                                }
+                            )
+                    }
+
+
+                    const currentActivityLog =
+                        character.activityLog ?? []
+
+
+                    const updatedActivityLog = [
+                        result,
+                        ...currentActivityLog,
+                    ]
+
+
+                    return {
+                        ...character,
+
+                        inventory:
+                            updatedInventory,
+
+                        activityLog:
+                            updatedActivityLog,
+                    }
                 }
-
-
-                const currentInventory =
-                    character.inventory ?? []
-
-
-                const updatedInventory =
-                    addItemToInventory(
-                        currentInventory,
-                        itemReward
-                    )
-
-
-                return {
-                    ...character,
-
-                    hp: Math.max(
-                        0,
-                        (character.hp ?? 100) +
-                        (reward.hp ?? 0)
-                    ),
-
-                    food:
-                        (character.food ?? 0) +
-                        (reward.food ?? 0),
-
-                    credit:
-                        (character.credit ?? 0) +
-                        (reward.credit ?? 0),
-
-                    inventory: updatedInventory,
-                }
-            })
+            )
 
 
         localStorage.setItem(
             'characters',
-            JSON.stringify(updatedCharacters)
+            JSON.stringify(
+                updatedCharacters
+            )
         )
 
 
         // =========================
-        // Daily 결과 저장
+        // 오늘 결과 저장
         // =========================
 
-        const result = {
-            date: today,
-
-            eventId: currentEvent.id,
-            eventTitle: currentEvent.title,
-            eventDescription:
-                currentEvent.description,
-
-            choice: choice.text,
-
-            result: selectedResult.text,
-
-            reward: {
-                hp: reward.hp ?? 0,
-                food: reward.food ?? 0,
-                credit: reward.credit ?? 0,
-            },
-
-            itemReward: itemReward,
-        }
-
-
         localStorage.setItem(
-            storageKey,
+            dailyStorageKey,
             JSON.stringify(result)
         )
 
 
+        // 진행 중 탐사 데이터 삭제
+        localStorage.removeItem(
+            explorationStorageKey
+        )
+
+
+        setPendingChoiceEvent(null)
+
         setDailyResult(result)
-        setCurrentEvent(null)
+
+        setExploration({
+            ...finalState,
+            finished: true,
+        })
     }
+
+
+    // =========================
+    // 화면
+    // =========================
 
     return (
         <div className="daily-page">
 
-            <button onClick={onBack}>
+            <button
+                className="page-back-button"
+                onClick={onBack}
+            >
                 ← PROFILE
             </button>
 
-            <h1>오늘의 활동</h1>
+
+            <h1>
+                오늘의 탐사
+            </h1>
 
 
-            {/* 아직 오늘의 활동을 시작하지 않음 */}
-            {!dailyResult && !currentEvent && (
+            {/* =========================
+                탐사 시작 전
+            ========================= */}
 
-                <div>
-                    <p>
-                        오늘 무슨 일이 일어날까요?
-                    </p>
+            {!dailyResult &&
+                !exploration.started && (
 
-                    <button onClick={startDaily}>
-                        오늘의 탐색 시작
-                    </button>
-                </div>
+                    <div className="daily-target">
 
-            )}
+                        <p>
+                            TODAY'S TARGET
+                        </p>
+
+                        <h2>
+                            {dailyTarget.name}
+                        </h2>
+
+                        <p>
+                            {
+                                dailyTarget
+                                    .description
+                            }
+                        </p>
+
+                        <p>
+                            발견 가능 심도 :
+                            {' '}
+                            DEPTH
+                            {' '}
+                            {dailyTarget.minDepth}+
+                        </p>
 
 
-            {/* 이벤트 발생 */}
-            {!dailyResult && currentEvent && (
-
-                <div className="daily-event">
-
-                    <h2>
-                        {currentEvent.title}
-                    </h2>
-
-                    <p>
-                        {currentEvent.description}
-                    </p>
-
-                    <div className="daily-choices">
-
-                        {currentEvent.choices.map(
-                            (choice, index) => (
-
-                                <button
-                                    key={index}
-                                    onClick={() =>
-                                        selectChoice(choice)
-                                    }
-                                >
-                                    {choice.text}
-                                </button>
-
-                            )
-                        )}
+                        <button
+                            onClick={
+                                startExploration
+                            }
+                        >
+                            탐사 시작
+                        </button>
 
                     </div>
 
-                </div>
-
-            )}
+                )}
 
 
-            {/* 오늘의 활동 완료 */}
-            {dailyResult && (
+            {/* =========================
+                탐사 진행 중
+            ========================= */}
 
-                <div className="daily-result">
+            {!dailyResult &&
+                exploration.started &&
+                !exploration.finished && (
 
-                    <h2>
-                        {dailyResult.eventTitle}
-                    </h2>
+                    <div className="exploration-panel">
 
-                    <p>
-                        {dailyResult.eventDescription}
-                    </p>
 
-                    <p>
-                        선택: {dailyResult.choice}
-                    </p>
+                        {/* 상태 */}
 
-                    <hr />
+                        <div className="exploration-status">
 
-                    <h3>결과</h3>
-
-                    <p>
-                        {dailyResult.result}
-                    </p>
-
-                    <div className="daily-reward">
-
-                        <h3>변화</h3>
-
-                        {(dailyResult.reward?.hp ?? 0) !== 0 && (
-                            <p>
-                                HP
-                                {' '}
-                                {(dailyResult.reward?.hp ?? 0) > 0 ? '+' : ''}
-                                {dailyResult.reward?.hp}
-                            </p>
-                        )}
-
-                        {(dailyResult.reward?.food ?? 0) !== 0 && (
-                            <p>
-                                FOOD
-                                {' '}
-                                {(dailyResult.reward?.food ?? 0) > 0 ? '+' : ''}
-                                {dailyResult.reward?.food}
-                            </p>
-                        )}
-
-                        {(dailyResult.reward?.credit ?? 0) !== 0 && (
-                            <p>
-                                CREDIT
-                                {' '}
-                                {(dailyResult.reward?.credit ?? 0) > 0 ? '+' : ''}
-                                {dailyResult.reward?.credit}
-                            </p>
-                        )}
-
-                        {dailyResult.itemReward && (
-
-                            <div className="daily-item-reward">
-
-                                <h3>획득 아이템</h3>
+                            <div>
+                                <strong>
+                                    DEPTH
+                                </strong>
 
                                 <p>
-                                    {items[dailyResult.itemReward.itemId]?.name}
-                                    {' ×'}
-                                    {dailyResult.itemReward.quantity}
+                                    {exploration.depth}
+                                </p>
+                            </div>
+
+
+                            <div>
+                                <strong>
+                                    SANITY
+                                </strong>
+
+                                <p>
+                                    {exploration.sanity}
+                                    {' '}
+                                    / 100
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        {/* SANITY BAR */}
+
+                        <div className="sanity-bar">
+
+                            <div
+                                className="sanity-bar-fill"
+                                style={{
+                                    width:
+                                        `${exploration.sanity}%`,
+                                }}
+                            />
+
+                        </div>
+
+
+                        {/* =========================
+                            현재 공간
+                        ========================= */}
+
+                        {
+                            exploration.currentEvent
+                                ? (
+
+                                    <div className="exploration-event">
+
+                                        <h2>
+                                            {
+                                                exploration
+                                                    .currentEvent
+                                                    .title
+                                            }
+                                        </h2>
+
+                                        <p>
+                                            {
+                                                exploration
+                                                    .currentEvent
+                                                    .description
+                                            }
+                                        </p>
+
+
+                                        {/* 선택 결과 */}
+
+                                        {
+                                            exploration
+                                                .currentEvent
+                                                .resultText &&
+                                            (
+
+                                                <div className="exploration-choice-result">
+
+                                                    <p>
+                                                        {
+                                                            exploration
+                                                                .currentEvent
+                                                                .resultText
+                                                        }
+                                                    </p>
+
+
+                                                    {
+                                                        (
+                                                            exploration
+                                                                .currentEvent
+                                                                .sanityChange ??
+                                                            0
+                                                        ) !== 0 &&
+                                                        (
+
+                                                            <p>
+                                                                SANITY
+                                                                {' '}
+
+                                                                {
+                                                                    exploration
+                                                                        .currentEvent
+                                                                        .sanityChange >
+                                                                    0
+                                                                        ? '+'
+                                                                        : ''
+                                                                }
+
+                                                                {
+                                                                    exploration
+                                                                        .currentEvent
+                                                                        .sanityChange
+                                                                }
+                                                            </p>
+
+                                                        )
+                                                    }
+
+                                                </div>
+
+                                            )
+                                        }
+
+
+                                        {/* 일반 이벤트 SANITY 감소 */}
+
+                                        {
+                                            !exploration
+                                                .currentEvent
+                                                .resultText &&
+
+                                            exploration
+                                                .currentEvent
+                                                .type !==
+                                                'choice' &&
+
+                                            (
+                                                exploration
+                                                    .currentEvent
+                                                    .sanityLoss ??
+                                                0
+                                            ) > 0 &&
+                                            (
+
+                                                <p>
+                                                    SANITY -
+                                                    {
+                                                        exploration
+                                                            .currentEvent
+                                                            .sanityLoss
+                                                    }
+                                                </p>
+
+                                            )
+                                        }
+
+                                    </div>
+
+                                )
+                                : (
+
+                                    <div className="exploration-event">
+
+                                        <h2>
+                                            탐사 시작
+                                        </h2>
+
+                                        <p>
+                                            아직 특별한 이상은
+                                            발견되지 않았다.
+                                        </p>
+
+                                    </div>
+
+                                )
+                        }
+
+
+                        {/* =========================
+                            선택지 이벤트
+                        ========================= */}
+
+                        {pendingChoiceEvent && (
+
+                            <div className="exploration-choice">
+
+                                <p className="exploration-choice-label">
+                                    행동을 선택하세요
+                                </p>
+
+
+                                <div className="exploration-choice-buttons">
+
+                                    {
+                                        pendingChoiceEvent
+                                            .choices
+                                            .map(
+                                                choice => (
+
+                                                    <button
+                                                        key={
+                                                            choice.id
+                                                        }
+                                                        onClick={() =>
+                                                            selectExplorationChoice(
+                                                                choice
+                                                            )
+                                                        }
+                                                    >
+                                                        {
+                                                            choice.text
+                                                        }
+                                                    </button>
+
+                                                )
+                                            )
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        )}
+
+
+                        {/* =========================
+                            목표물 발견
+                        ========================= */}
+
+                        {exploration.targetFound && (
+
+                            <div className="target-acquired">
+
+                                <p>
+                                    TARGET ACQUIRED
+                                </p>
+
+                                <h2>
+                                    {dailyTarget.name}
+                                </h2>
+
+                                <p>
+                                    목표물을 발견했다.
+                                    이제 복귀하면
+                                    오늘의 탐사는 성공한다.
                                 </p>
 
                             </div>
 
                         )}
 
+
+                        {/* =========================
+                            행동
+                        ========================= */}
+
+                        <div className="exploration-actions">
+
+                            <button
+                                onClick={
+                                    moveForward
+                                }
+                                disabled={
+                                    pendingChoiceEvent !==
+                                    null
+                                }
+                            >
+                                앞으로 나가기
+                            </button>
+
+
+                            <button
+                                onClick={
+                                    returnFromExploration
+                                }
+                            >
+                                {
+                                    exploration
+                                        .targetFound
+                                        ? '목표물을 가지고 복귀'
+                                        : '복귀하기'
+                                }
+                            </button>
+
+                        </div>
+
+
                     </div>
 
+                )}
+
+
+            {/* =========================
+                오늘 탐사 완료
+            ========================= */}
+
+            {dailyResult && (
+
+                <div className="daily-result">
+
+
+                    {
+                        dailyResult.type ===
+                        'success' && (
+
+                            <>
+                                <h2>
+                                    MISSION COMPLETE
+                                </h2>
+
+                                <p>
+                                    목표물을 회수하고
+                                    무사히 복귀했습니다.
+                                </p>
+
+                                <p>
+                                    획득 :
+                                    {' '}
+                                    {
+                                        items[
+                                            dailyResult
+                                                .targetItemId
+                                        ]?.name ??
+                                        dailyTarget.name
+                                    }
+                                </p>
+                            </>
+
+                        )
+                    }
+
+
+                    {
+                        dailyResult.type ===
+                        'incomplete' && (
+
+                            <>
+                                <h2>
+                                    MISSION INCOMPLETE
+                                </h2>
+
+                                <p>
+                                    목표물을 찾지 못한 채
+                                    탐사를 종료했습니다.
+                                </p>
+                            </>
+
+                        )
+                    }
+
+
+                    {
+                        dailyResult.type ===
+                        'collapse' && (
+
+                            <>
+                                <h2>
+                                    MENTAL COLLAPSE
+                                </h2>
+
+                                <p>
+                                    이성치가 완전히
+                                    붕괴했습니다.
+                                </p>
+                            </>
+
+                        )
+                    }
+
+
+                    <hr />
+
+
                     <p>
-                        오늘의 활동을 완료했습니다.
+                        최종 심도 :
+                        {' '}
+                        DEPTH
+                        {' '}
+                        {dailyResult.depth}
                     </p>
+
+                    <p>
+                        최종 SANITY :
+                        {' '}
+                        {dailyResult.sanity}
+                        {' '}
+                        / 100
+                    </p>
+
 
                 </div>
 
             )}
 
+
         </div>
     )
-
-
 }
-
 
 
 export default Daily
