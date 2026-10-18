@@ -23,6 +23,7 @@ export function startMission({ content, duration, character, now = Date.now() })
     risk: content.risk,
     rewards: content.rewards,
     hazards: content.hazards,
+    intel: content.intel,
     report: null,
   }
 }

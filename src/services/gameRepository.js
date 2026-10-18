@@ -1,19 +1,29 @@
-const STORAGE_KEY = 'project-limen:mvp:v1'
+const STORAGE_KEY = 'project-limen:mvp:v2'
+const LEGACY_KEY = 'project-limen:mvp:v1'
 
-const emptyState = () => ({ version: 1, character: null, activeMission: null, reports: [] })
+const emptyState = () => ({ version: 2, character: null, activeMission: null, reports: [], discoveredIntel: [], crew: null, crewMessages: [], crewContributions: 0 })
+
+const migrate = (data) => {
+  if (!data) return emptyState()
+  const base = { ...emptyState(), ...data, version: 2 }
+  if (!base.character) return base
+  return { ...base, character: { inventory: [], equipment: {}, progress: {}, ...base.character } }
+}
 
 export class LocalGameRepository {
   load() {
     try {
-      const data = JSON.parse(localStorage.getItem(STORAGE_KEY))
-      return data?.version === 1 ? { ...emptyState(), ...data } : emptyState()
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_KEY))
+      const migrated = migrate(data)
+      if (data?.version !== 2) this.save(migrated)
+      return migrated
     } catch {
       return emptyState()
     }
   }
 
   save(state) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, version: 1 }))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, version: 2 }))
     return state
   }
 
