@@ -1,16 +1,38 @@
-# React + Vite
+# PROJECT LIMEN
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+폐쇄 기밀 연구소의 실험체가 격리 개체 관리와 이상 공간 탐사를 비동기로 수행하고, 보고·정보·부상·계승을 관리하는 웹 RPG 프로토타입입니다.
 
-Currently, two official plugins are available:
+## 로컬 실행
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Node.js 20 이상을 권장합니다.
 
-## React Compiler
+```bash
+npm install
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+터미널에 표시되는 로컬 주소(기본 `http://localhost:5173`)를 브라우저에서 여십시오. 첫 실행은 캐릭터 제작 화면에서 시작하며, 저장 데이터와 업로드한 프로필 이미지는 현재 브라우저의 `localStorage`에만 보관됩니다.
 
-## Expanding the ESLint configuration
+## 구현 범위
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 이미지 업로드, 신체 정보와 능력치가 반영되는 단일 생존 캐릭터 생성
+- 격리 개체 60종, 단계형 탐사 구역 40종
+- 30·60·120·180분 절대 시각 기반 자동 임무와 재접속 복원
+- 1~8인 비동기 편성, 정보 적용, 접근 방침, 철수 기준, 선택형 자동 소비
+- 부위별 손상, 이상 건강, 내면 발화, 치료, 빈사·구조·영구 사망·계승
+- 계정 사내 등급 1~45, 장기 미접속 강등, 일일 급여, 상점과 칭호
+- 보고·정보 기록국, 정형 메시지 작업반, 격리 이탈 월드 사건
+
+현재 버전은 서버 없이 핵심 루프를 검증하는 로컬 MVP입니다. 실제 멀티플레이 서비스에서는 시간·임무 판정·거래·등급·월드 사건을 서버 권한으로 이전해야 합니다.
+
+## 검증
+
+```bash
+npm run check
+```
+
+콘텐츠 개수·식별자·편성 범위를 검증한 뒤 ESLint와 프로덕션 빌드를 수행합니다. 프로젝트 기획과 파트 간 인계 기준은 [`PROJECT_LIMEN.md`](./PROJECT_LIMEN.md)를 참고하십시오.
+
+## 보안 메모
+
+외부 AI API와 API 키를 사용하지 않습니다. 프로필 파일은 이미지 MIME과 2MB 제한을 검사합니다. 정적 웹 클라이언트에 비밀키를 추가하지 마십시오.
