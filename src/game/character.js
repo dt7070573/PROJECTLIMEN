@@ -1,10 +1,10 @@
 import { titles } from '../data/contracts/contentAdapter.js'
 
 export const GENDERS = [
-  { id: 'female', label: '여성' },
-  { id: 'male', label: '남성' },
-  { id: 'nonbinary', label: '논바이너리' },
-  { id: 'undisclosed', label: '비공개' },
+  { id: 'female', label: '여성', modifiers: { agility: 1, empathy: 1 } },
+  { id: 'male', label: '남성', modifiers: { strength: 1, endurance: 1 } },
+  { id: 'nonbinary', label: '논바이너리', modifiers: { perception: 1, will: 1 } },
+  { id: 'undisclosed', label: '비공개', modifiers: { analysis: 1, will: 1 } },
 ]
 
 export const BODY_TYPES = [
@@ -29,22 +29,30 @@ export const STAT_LABELS = {
   perception: '지각', analysis: '분석', will: '의지', empathy: '공감',
 }
 
+export const BODY_PART_LABELS = {
+  head: '머리', torso: '몸통', leftArm: '왼팔', rightArm: '오른팔', leftLeg: '왼다리', rightLeg: '오른다리',
+}
+
+export const createHealthyBodyParts = () => Object.fromEntries(
+  Object.keys(BODY_PART_LABELS).map((id) => [id, { integrity: 100, injury: null, permanent: false }]),
+)
+
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 
 export function deriveStats({ gender, bodyType, height, weight }) {
   const type = BODY_TYPES.find((item) => item.id === bodyType) ?? BODY_TYPES[1]
+  const genderProfile = GENDERS.find((item) => item.id === gender)
   const bmi = weight / ((height / 100) ** 2)
   const stats = { ...BASE_STATS }
 
   Object.entries(type.modifiers).forEach(([key, value]) => { stats[key] += value })
+  Object.entries(genderProfile?.modifiers ?? {}).forEach(([key, value]) => { stats[key] += value })
 
   if (height >= 180) stats.strength += 1
   if (height <= 165) stats.agility += 1
   if (bmi >= 18.5 && bmi <= 25) stats.endurance += 1
   if (bmi < 18.5) stats.agility += 1
   if (bmi > 27) stats.strength += 1
-  if (gender === 'undisclosed') stats.will += 1
-
   return Object.fromEntries(Object.entries(stats).map(([key, value]) => [key, clamp(value, 1, 10)]))
 }
 
@@ -83,6 +91,7 @@ export function createCharacter(draft, now = Date.now()) {
       physical: 100,
       mental: 100,
       fatigue: 10,
+      bodyParts: createHealthyBodyParts(),
       anomaly: {
         biologicalIntegrity: 100,
         cognitiveStability: 100,

@@ -7,7 +7,13 @@ function seededFraction(seed) {
   return value - Math.floor(value)
 }
 
-export function startMission({ content, duration, character, now = Date.now() }) {
+const APPROACHES = {
+  cautious: { success: 0.08, reward: 0.85, damage: 0.65, label: '안전 우선' },
+  standard: { success: 0, reward: 1, damage: 1, label: '표준 절차' },
+  assertive: { success: -0.05, reward: 1.25, damage: 1.3, label: '성과 우선' },
+}
+
+export function startMission({ content, duration, character, options = {}, now = Date.now() }) {
   if (!content.durations.includes(duration)) throw new Error('지원하지 않는 임무 시간입니다.')
   if (character.rank < content.minRank) throw new Error('사내 등급이 부족합니다.')
   return {
@@ -24,6 +30,14 @@ export function startMission({ content, duration, character, now = Date.now() })
     rewards: content.rewards,
     hazards: content.hazards,
     intel: content.intel,
+    requirements: content.requirementScores ?? {},
+    options: {
+      approach: options.approach ?? 'standard',
+      retreatThreshold: Number(options.retreatThreshold ?? 50),
+      appliedIntel: (options.appliedIntel ?? []).filter((clue) => content.intel.includes(clue)),
+      autoSupply: Boolean(options.autoSupply),
+      equipmentPower: Number(options.equipmentPower ?? 0),
+    },
     report: null,
   }
 }
@@ -39,24 +53,40 @@ export function canCompleteMission(mission, now = Date.now()) {
 
 export function completeMission(mission, character, now = Date.now()) {
   if (!canCompleteMission(mission, now)) throw new Error('임무가 아직 진행 중입니다.')
+  const approach = APPROACHES[mission.options?.approach] ?? APPROACHES.standard
   const roll = seededFraction(mission.startedAt + mission.duration + character.stats.will)
-  const statPower = mission.type === 'containment'
-    ? character.stats.analysis + character.skills.containment
-    : character.stats.perception + character.skills.exploration
-  const success = roll + statPower / 25 >= mission.risk / 8
-  const xp = Math.round((mission.rewards?.xp ?? 25) * (success ? 1 : 0.55))
-  const credits = Math.round((mission.rewards?.credits ?? 30) * (success ? 1 : 0.35))
-  const physicalLoss = success ? mission.risk * 2 : mission.risk * 5
-  const mentalLoss = success ? mission.risk : mission.risk * 4
+  const coreStat = mission.type === 'containment' ? character.stats.analysis : character.stats.perception
+  const skill = character.skills[mission.type] ?? 0
+  const requirementAverage = Object.values(mission.requirements ?? {}).reduce((sum, value) => sum + Number(value), 0) / Math.max(1, Object.keys(mission.requirements ?? {}).length)
+  const readiness = (coreStat + skill + Number(mission.options?.equipmentPower ?? 0) - requirementAverage) / 24
+  const knownIntel = mission.options?.appliedIntel?.length ?? 0
+  const intelBonus = Math.min(0.42, knownIntel * 0.24)
+  const conditionPenalty = ((100 - character.condition.physical) + (100 - character.condition.mental) + character.condition.fatigue) / 650
+  const successScore = roll + readiness + intelBonus + approach.success - conditionPenalty
+  const target = 0.36 + mission.risk * 0.085
+  const success = successScore >= target
+  const durationScale = 0.75 + mission.duration / 240
+  const xp = Math.round((mission.rewards?.xp ?? 25) * durationScale * approach.reward * (success ? 1 : 0.55))
+  const credits = Math.round((mission.rewards?.credits ?? 30) * durationScale * approach.reward * (success ? 1 : 0.35))
+  const intelProtection = Math.max(0.45, 1 - knownIntel * 0.2)
+  const physicalLoss = Math.round((success ? mission.risk * 2 : mission.risk * 5) * approach.damage * intelProtection)
+  const mentalLoss = Math.round((success ? mission.risk : mission.risk * 4) * approach.damage * intelProtection)
+  const safetyTriggered = character.condition.physical - physicalLoss <= (mission.options?.retreatThreshold ?? 50)
+  const finalOutcome = safetyTriggered && !success ? 'safe-withdrawal' : success ? 'success' : 'partial'
+  const bodyPartIds = ['head', 'torso', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg']
+  const damagedPart = bodyPartIds[Math.floor(seededFraction(mission.startedAt + mission.risk * 31) * bodyPartIds.length)]
   const report = {
     completedAt: now,
-    outcome: success ? 'success' : 'partial',
-    headline: success ? '임무 목표 달성' : '비상 철수 · 부분 성과',
-    lines: success
-      ? [`${mission.name}의 핵심 절차를 완료했습니다.`, '회수 자료가 기록국으로 이관되었습니다.']
-      : [`${mission.name}에서 위험 징후를 확인하고 철수했습니다.`, '사전 안전 규약으로 치명 피해를 회피했습니다.'],
+    outcome: finalOutcome,
+    headline: success ? '임무 목표 달성' : safetyTriggered ? '안전 철수 규약 발동' : '비상 철수 · 부분 성과',
+    lines: [
+      success ? `${mission.name}의 핵심 절차를 완료했습니다.` : `${mission.name}에서 위험 징후를 확인하고 철수했습니다.`,
+      knownIntel ? `확보 단서 ${knownIntel}건이 판정에 크게 기여했습니다.` : '검증된 사전 단서 없이 현장 판단으로 진행했습니다.',
+      `${approach.label} 방침과 신체 ${mission.options?.retreatThreshold ?? 50}% 철수 기준을 적용했습니다.`,
+    ],
+    factors: { successScore: Number(successScore.toFixed(2)), target: Number(target.toFixed(2)), knownIntel, approach: mission.options?.approach ?? 'standard' },
     gains: { xp, credits },
-    losses: { physical: physicalLoss, mental: mentalLoss },
+    losses: { physical: physicalLoss, mental: mentalLoss, bodyPart: damagedPart, bodyPartDamage: Math.max(1, physicalLoss * 2) },
   }
   return { ...mission, status: 'completed', report }
 }
@@ -82,6 +112,12 @@ export function applyMissionReport(character, mission) {
     .filter((entry) => entry.condition?.type === 'always' || Number(progress[entry.condition?.type] ?? 0) >= Number(entry.condition?.value ?? Infinity))
     .map((entry) => entry.name)
   if (!unlockedTitles.length) unlockedTitles.push(...character.unlockedTitles)
+  const bodyParts = { ...(character.condition.bodyParts ?? {}) }
+  const partId = losses.bodyPart
+  if (partId && bodyParts[partId]) {
+    const integrity = clamp(bodyParts[partId].integrity - losses.bodyPartDamage, 0, 100)
+    bodyParts[partId] = { ...bodyParts[partId], integrity, injury: integrity < 25 ? '중증 기능 손상' : integrity < 55 ? '골절·심부 손상' : integrity < 85 ? '타박·열상' : null, permanent: bodyParts[partId].permanent || integrity <= 10 }
+  }
   return {
     ...character,
     level,
@@ -100,6 +136,7 @@ export function applyMissionReport(character, mission) {
       physical: clamp(character.condition.physical - losses.physical, 0, 100),
       mental: clamp(character.condition.mental - losses.mental, 0, 100),
       fatigue: clamp(character.condition.fatigue + mission.duration / 6, 0, 100),
+      bodyParts,
       effects: outcome === 'partial'
         ? [...character.condition.effects, { id: `${mission.id}-stress`, name: '임무 후 스트레스', severity: mission.risk }]
         : character.condition.effects,

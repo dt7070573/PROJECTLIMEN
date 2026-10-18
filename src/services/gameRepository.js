@@ -3,11 +3,14 @@ const LEGACY_KEY = 'project-limen:mvp:v1'
 
 const emptyState = () => ({ version: 2, character: null, activeMission: null, reports: [], discoveredIntel: [], crew: null, crewMessages: [], crewContributions: 0 })
 
+const defaultBodyParts = () => Object.fromEntries(['head', 'torso', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'].map((id) => [id, { integrity: 100, injury: null, permanent: false }]))
+
 const migrate = (data) => {
   if (!data) return emptyState()
   const base = { ...emptyState(), ...data, version: 2 }
   if (!base.character) return base
-  return { ...base, character: { inventory: [], equipment: {}, progress: {}, ...base.character } }
+  const character = { inventory: [], equipment: {}, progress: {}, ...base.character }
+  return { ...base, character: { ...character, condition: { ...character.condition, bodyParts: { ...defaultBodyParts(), ...(character.condition?.bodyParts ?? {}) } } } }
 }
 
 export class LocalGameRepository {

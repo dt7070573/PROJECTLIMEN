@@ -1,4 +1,5 @@
 import { titles } from '../data/contracts/contentAdapter.js'
+import { storeItems } from '../data/contracts/systemAdapter.js'
 
 const clamp = (value, min = 0, max = 100) => Math.min(max, Math.max(min, value))
 
@@ -18,6 +19,14 @@ export function applyTreatment(character, treatmentId, missionActive) {
   if (treatmentId === 'fatigue') condition.fatigue = clamp(condition.fatigue - treatment.amount)
   else if (treatmentId === 'effects') condition.effects = condition.effects.slice(1)
   else condition[treatmentId] = clamp(condition[treatmentId] + treatment.amount)
+  if (treatmentId === 'physical' && condition.bodyParts) {
+    const targetId = Object.entries(condition.bodyParts).sort(([, a], [, b]) => a.integrity - b.integrity)[0]?.[0]
+    if (targetId) {
+      const part = condition.bodyParts[targetId]
+      const integrity = Math.min(part.permanent ? 60 : 100, part.integrity + treatment.amount)
+      condition.bodyParts = { ...condition.bodyParts, [targetId]: { ...part, integrity, injury: integrity < 25 ? '중증 기능 손상' : integrity < 55 ? '골절·심부 손상' : integrity < 85 ? '타박·열상' : null } }
+    }
+  }
   return { ...character, credits: character.credits - treatment.cost, condition, progress: { ...character.progress, treatments: (character.progress?.treatments ?? 0) + 1 } }
 }
 
@@ -52,4 +61,13 @@ export function consumeItem(character, item) {
   if (item.effects.informationContamination) condition.anomaly = { ...condition.anomaly, informationContamination: clamp(condition.anomaly.informationContamination + item.effects.informationContamination) }
   const inventory = character.inventory.map((owned) => owned.itemId === item.id ? { ...owned, quantity: owned.quantity - 1 } : owned).filter((owned) => owned.quantity > 0)
   return { ...character, condition, inventory }
+}
+
+export function getEquipmentPower(character, missionType) {
+  return Object.values(character.equipment ?? {}).reduce((total, itemId) => {
+    const item = storeItems.find((entry) => entry.id === itemId)
+    if (!item) return total
+    const effects = item.effects ?? {}
+    return total + Number(effects[missionType] ?? 0) + Number(effects.analysis ?? 0) * 0.5 + Number(effects.anomalyGuard ?? 0) * 0.35
+  }, 0)
 }

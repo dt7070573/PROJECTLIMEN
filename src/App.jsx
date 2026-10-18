@@ -9,7 +9,7 @@ import Records from './pages/Records.jsx'
 import Crew from './pages/Crew.jsx'
 import { completeMission, applyMissionReport, canCompleteMission, startMission } from './game/mission.js'
 import { createCharacter } from './game/character.js'
-import { applyTreatment, buyItem, consumeItem, equipItem, selectTitle } from './game/systems.js'
+import { applyTreatment, buyItem, consumeItem, equipItem, getEquipmentPower, selectTitle } from './game/systems.js'
 import { crewSeed } from './data/contracts/systemAdapter.js'
 import { gameRepository } from './services/gameRepository.js'
 import './App.css'
@@ -30,7 +30,7 @@ function App() {
   const changeCharacter = (transform, message) => { try { persist({ ...game, character: transform(game.character) }, message) } catch (error) { setNotice(error.message) } }
 
   const handleCreate = (draft) => { if (game.character?.alive) throw new Error('생존 캐릭터는 한 명만 운용할 수 있습니다.'); persist({ ...game, character: createCharacter(draft), activeMission: null, crew: crewSeed }, '실험체 등록이 완료되었습니다.'); setPage('dashboard') }
-  const handleStartMission = (content, duration) => { if (game.activeMission?.status === 'active') throw new Error('이미 진행 중인 임무가 있습니다.'); persist({ ...game, activeMission: startMission({ content, duration, character: game.character }) }, `${duration}분 임무를 시작했습니다.`); setPage('dashboard') }
+  const handleStartMission = (content, duration, options) => { if (game.activeMission?.status === 'active') throw new Error('이미 진행 중인 임무가 있습니다.'); persist({ ...game, activeMission: startMission({ content, duration, options: { ...options, equipmentPower: getEquipmentPower(game.character, content.type) }, character: game.character }) }, `${duration}분 임무를 시작했습니다.`); setPage('dashboard') }
   const handleCompleteMission = () => {
     const completed = completeMission(game.activeMission, game.character)
     const intel = [...new Set([...(game.discoveredIntel ?? []), ...(completed.intel ?? [])])]
