@@ -4,7 +4,7 @@ import { BODY_TYPES, deriveStats, GENDERS, STAT_LABELS, validateCharacterDraft }
 
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024
 
-function CharacterCreator({ onComplete }) {
+function CharacterCreator({ onComplete, legacy }) {
   const inputRef = useRef(null)
   const [draft, setDraft] = useState({ name: '', gender: '', bodyType: 'balanced', height: 170, weight: 65, portrait: null })
   const [errors, setErrors] = useState({})
@@ -34,6 +34,7 @@ function CharacterCreator({ onComplete }) {
         <div className="brand large"><Dna /> PROJECT LIMEN</div><p className="eyebrow">SUBJECT REGISTRATION / 01</p>
         <h1>경계 너머로<br />투입될 실험체를<br /><em>등록하십시오.</em></h1>
         <p>생존 캐릭터는 한 번에 한 명만 운용할 수 있습니다. 신체 정보는 초기 능력과 임무 적합도에 반영됩니다.</p>
+        {legacy && <div className="legacy-note"><strong>기록 계승 · 제 {legacy.generation + 1} 실험체</strong><span>{legacy.previousName}의 {STAT_LABELS[legacy.inheritedStat]} +1 · 지원금 50 CR · 기록 칭호 보존</span></div>}
         <div className="security-note"><ShieldCheck /><div><strong>로컬 보안 저장</strong><span>업로드 이미지는 외부로 전송되지 않으며 이 브라우저에만 저장됩니다.</span></div></div>
       </section>
       <form className="creator-card" onSubmit={submit}>
