@@ -110,23 +110,23 @@ button {
 
 :root,
 .dark {
-    --background: #132221;
+    --background: #0f1313;
     --foreground: #f7f8f7;
 
-    --card: #1a2d2b;
+    --card: #121818;
     --card-foreground: #f7f8f7;
 
-    --popover: #1a2d2b;
+    --popover: #121818;
     --popover-foreground: #f7f8f7;
 
     --primary: #601010;
     --primary-foreground: #ffffff;
 
-    --secondary: #263b39;
-    --secondary-foreground: #e8efed;
+    --secondary: #1b2323;
+    --secondary-foreground: #e7ebeb;
 
-    --muted: #203432;
-    --muted-foreground: #aabbb7;
+    --muted: #171e1e;
+    --muted-foreground: #9da8a8;
 
     --accent: #7a1717;
     --accent-foreground: #ffffff;
@@ -134,25 +134,25 @@ button {
     --destructive: #8f2929;
     --destructive-foreground: #ffffff;
 
-    --border: #35504d;
-    --input: #35504d;
+    --border: #303a3a;
+    --input: #303a3a;
     --ring: #9c3333;
 
     --chart-1: #601010;
     --chart-2: #8c2b2b;
-    --chart-3: #52736f;
-    --chart-4: #83a09c;
-    --chart-5: #c3d0cd;
+    --chart-3: #555f5f;
+    --chart-4: #858e8e;
+    --chart-5: #c4caca;
 
     --radius: 0.625rem;
 
-    --sidebar: #172826;
+    --sidebar: #101616;
     --sidebar-foreground: #f7f8f7;
     --sidebar-primary: #601010;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #263b39;
+    --sidebar-accent: #1b2323;
     --sidebar-accent-foreground: #f7f8f7;
-    --sidebar-border: #35504d;
+    --sidebar-border: #303a3a;
     --sidebar-ring: #9c3333;
 }
 

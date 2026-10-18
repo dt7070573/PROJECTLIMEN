@@ -1,4 +1,8 @@
 const explorationEvents = [
+    // =========================
+    // 일반 이벤트
+    // =========================
+
     {
         id: 'empty_hallway',
         type: 'normal',
@@ -10,6 +14,11 @@ const explorationEvents = [
 
         sanityLoss: 3,
     },
+
+
+    // =========================
+    // 선택지 이벤트
+    // =========================
 
     {
         id: 'strange_door',
@@ -27,9 +36,35 @@ const explorationEvents = [
                 text: '문을 연다',
 
                 results: [
+
+                    // 70% - 별일 없음
                     {
+                        weight: 70,
+
                         text:
-                            '문 너머에는 아무도 없었다. 대신 바닥에 오래된 물건이 놓여 있다.',
+                            '문 너머에는 아무도 없었다. 텅 빈 방만 남아 있다.',
+
+                        sanityChange: -3,
+                    },
+
+
+                    // 25% - 위험
+                    {
+                        weight: 25,
+
+                        text:
+                            '문이 열리자 안쪽에서 검은 형체가 빠르게 지나갔다.',
+
+                        sanityChange: -15,
+                    },
+
+
+                    // 5% - 아이템 발견
+                    {
+                        weight: 5,
+
+                        text:
+                            '방 안을 살펴보던 중 바닥에서 사용할 수 있을 것 같은 물건을 발견했다.',
 
                         sanityChange: -5,
 
@@ -38,15 +73,9 @@ const explorationEvents = [
                             quantity: 1,
                         },
                     },
-
-                    {
-                        text:
-                            '문이 열리자 안쪽에서 검은 형체가 빠르게 지나갔다.',
-
-                        sanityChange: -15,
-                    },
                 ],
             },
+
 
             {
                 id: 'ignore',
@@ -55,8 +84,10 @@ const explorationEvents = [
 
                 results: [
                     {
+                        weight: 100,
+
                         text:
-                            '소리를 뒤로하고 복도를 계속 걸었다.',
+                            '두드리는 소리를 뒤로하고 복도를 계속 걸었다.',
 
                         sanityChange: -2,
                     },
@@ -65,5 +96,6 @@ const explorationEvents = [
         ],
     },
 ]
+
 
 export default explorationEvents

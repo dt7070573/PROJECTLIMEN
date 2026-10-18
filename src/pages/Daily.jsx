@@ -8,6 +8,7 @@ import dailyTargets from '../data/dailyTargets.js'
 import {
     getDailyTarget,
     getRandomItem,
+    getWeightedRandom,
 } from '../data/explorationUtils.js'
 
 
@@ -322,7 +323,7 @@ const [
     const selectExplorationChoice = (choice) => {
 
         const selectedResult =
-            getRandomItem(choice.results)
+    getWeightedRandom(choice.results)
 
         const sanityChange =
             selectedResult.sanityChange ?? 0
