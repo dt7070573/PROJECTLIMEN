@@ -1,0 +1,13 @@
+import { useState } from 'react'
+import { crewSeed, messageTemplates, systemContentSource } from '../data/contracts/systemAdapter.js'
+
+function Crew({ game, onMessage, onContribute }) {
+  const crew = game.crew ?? crewSeed
+  const [templateId, setTemplateId] = useState(messageTemplates[0]?.id ?? '')
+  const [detail, setDetail] = useState('')
+  const template = messageTemplates.find((item) => item.id === templateId)
+  const total = Math.min(crew.goal.target, crew.goal.current + game.crewContributions)
+  const submit = () => { if (!template) return; onMessage(`${template.text}${detail.trim() ? ` — ${detail.trim()}` : ''}`); setDetail('') }
+  return <section className="page-content"><div className="page-heading"><div><span className="eyebrow">ASYNCHRONOUS CREW</span><h1>{crew.name}</h1><p>동시 접속 없이 공지와 정형 정보를 공유합니다.</p></div><span className="clearance">{systemContentSource.social.toUpperCase()}</span></div><div className="crew-grid"><article className="panel"><div className="panel-title"><div><span className="eyebrow">NOTICE</span><h2>작업반 공지</h2></div></div><blockquote>{crew.notice}</blockquote><h3>구성원</h3>{crew.members.map((member) => <div className="member-row" key={member.id}><strong>{member.name}</strong><span>{member.role}</span></div>)}</article><article className="panel"><div className="panel-title"><div><span className="eyebrow">SHARED OBJECTIVE</span><h2>{crew.goal.name}</h2></div></div><div className="level"><strong>{total} / {crew.goal.target}</strong><span>개인 기여 {game.crewContributions}</span></div><div className="progress"><i style={{ width: `${total / crew.goal.target * 100}%` }} /></div><button className="primary-action" onClick={onContribute}>10 CR 기여</button></article><article className="panel message-compose"><div className="panel-title"><div><span className="eyebrow">STRUCTURED MESSAGE</span><h2>정형 메시지 작성</h2></div></div><select value={templateId} onChange={(event) => setTemplateId(event.target.value)}>{messageTemplates.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select><textarea maxLength="80" placeholder="선택 정보 추가 (80자 이내)" value={detail} onChange={(event) => setDetail(event.target.value)} /><p>{template?.text}</p><button className="primary-action" onClick={submit}>작업반에 공유</button></article></div><article className="panel message-feed"><div className="panel-title"><div><span className="eyebrow">CREW FEED</span><h2>최근 공유</h2></div></div>{game.crewMessages.length ? game.crewMessages.map((message) => <div className="message-row" key={message.id}><strong>{message.author}</strong><p>{message.text}</p><time>{new Date(message.createdAt).toLocaleString('ko-KR')}</time></div>) : <p className="muted">공유된 메시지가 없습니다.</p>}</article></section>
+}
+export default Crew
