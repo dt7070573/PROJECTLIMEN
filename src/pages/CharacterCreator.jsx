@@ -1,366 +1,60 @@
-import { useState } from 'react'
-import './CharacterCreator.css'
-import Avatar from '../components/Avatar.jsx'
-
-import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-
-const categories = [
-    { id: 'gender', label: '성별' },
-    { id: 'skin', label: '피부색' },
-    { id: 'hair', label: '헤어스타일' },
-    { id: 'eyes', label: '눈' },
-    { id: 'mouth', label: '입' },
-    { id: 'clothes', label: '옷' },
-    { id: 'accessory', label: '악세사리' },
-    { id: 'glasses', label: '안경' },
-]
-
-const options = {
-    gender: ['여성', '남성'],
-    skin: ['피부 01', '피부 02', '피부 03', '피부 04'],
-    hair: [
-        '헤어 01',
-        '헤어 02',
-        '헤어 03',
-        '헤어 04',
-        '헤어 05',
-        '헤어 06',
-        '헤어 07',
-        '헤어 08',
-    ],
-    eyes: [
-        '눈 01',
-        '눈 02',
-        '눈 03',
-        '눈 04',
-        '눈 05',
-        '눈 06',
-    ],
-    mouth: [
-        '표정 01',
-        '표정 02',
-        '표정 03',
-        '표정 04',
-    ],
-    clothes: [
-        '의상 01',
-        '의상 02',
-        '의상 03',
-        '의상 04',
-        '의상 05',
-        '의상 06',
-    ],
-    accessory: [
-        '악세사리 01',
-        '악세사리 02',
-        '악세사리 03',
-        '악세사리 04',
-    ],
-    glasses: [
-        '안경 01',
-        '안경 02',
-        '안경 03',
-        '안경 04',
-    ]
-}
-
-function CharacterCreator({
-    onBack,
-    onComplete,
-    editingCharacterId
-}) {
-    const [selectedCategory, setSelectedCategory] = useState('hair')
-
-    const [character, setCharacter] = useState(() => {
-
-        if (editingCharacterId !== null) {
-            const savedCharacters =
-                JSON.parse(localStorage.getItem('characters')) || []
-
-            const existingCharacter =
-                savedCharacters.find(
-                    character =>
-                        character.id === editingCharacterId
-                )
-
-            if (existingCharacter) {
-                return existingCharacter
-            }
-        }
-
-        return {
-            name: '',
-            gender: 0,
-            skin: 0,
-            hair: 0,
-            eyes: 0,
-            mouth: 0,
-            clothes: 0,
-            accessory: 0,
-            glasses: 0,
-
-            hp: 100,
-            food: 0,
-            credit: 0,
-
-            inventory: [],
-        }
-    })
-
-    const handleOptionSelect = (index) => {
-        setCharacter({
-            ...character,
-            [selectedCategory]: index,
-        })
-    }
-
-    const handleComplete = () => {
-        const savedCharacters =
-            JSON.parse(localStorage.getItem('characters')) || []
-
-        if (character.name.trim() === '') {
-            alert('캐릭터 이름을 입력해주세요.')
-            return
-        }
-
-        if (editingCharacterId !== null) {
-            const updatedCharacters =
-                savedCharacters.map(savedCharacter => {
-
-                    if (savedCharacter.id === editingCharacterId) {
-                        return {
-                            ...character,
-                            id: editingCharacterId,
-                        }
-                    }
-
-                    return savedCharacter
-                })
-
-            localStorage.setItem(
-                'characters',
-                JSON.stringify(updatedCharacters)
-            )
-
-            alert('캐릭터가 수정되었습니다.')
-
-            onComplete()
-
-            return
-        }
-
-        if (savedCharacters.length >= 5) {
-            alert('캐릭터는 최대 5개까지 만들 수 있습니다.')
-            return
-        }
-
-        const newCharacter = {
-            ...character,
-            id: Date.now(),
-        }
-
-        const updatedCharacters = [
-            ...savedCharacters,
-            newCharacter,
-        ]
-
-        localStorage.setItem(
-            'characters',
-            JSON.stringify(updatedCharacters)
-        )
-
-        alert('캐릭터가 생성되었습니다.')
-
-        onComplete()
-    }
-
-    const currentOptions = options[selectedCategory]
-
-    const selectedCategoryLabel =
-        categories.find(
-            category => category.id === selectedCategory
-        )?.label
-
-    return (
-        <div className="creator-page">
-
-            <Button
-                variant="outline"
-                className="page-back-button"
-                onClick={onBack}
-            >
-                ← HOME
-            </Button>
-
-            {/* 왼쪽 대분류 */}
-            <Card className="category-panel">
-
-                <CardHeader>
-                    <CardTitle>
-                        외형 설정
-                    </CardTitle>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-
-                    <div className="category-list">
-
-                        {categories.map(category => (
-
-                            <Button
-                                key={category.id}
-                                variant={
-                                    selectedCategory === category.id
-                                        ? "default"
-                                        : "ghost"
-                                }
-                                className="category-button w-full justify-start"
-                                onClick={() =>
-                                    setSelectedCategory(category.id)
-                                }
-                            >
-                                {category.label}
-                            </Button>
-
-                        ))}
-
-                    </div>
-
-                </CardContent>
-
-            </Card>
-
-
-            {/* 중앙 캐릭터 */}
-            <Card className="character-preview-panel">
-
-                <CardHeader className="w-full items-center text-center">
-                    <CardTitle className="text-2xl whitespace-nowrap">
-                        캐릭터 생성
-                    </CardTitle>
-                </CardHeader>
-
-                <CardContent className="space-y-5">
-
-                    <div className="character-preview">
-                        <Avatar character={character} />
-                    </div>
-
-                    <Input
-                        type="text"
-                        placeholder="캐릭터 이름"
-                        value={character.name}
-                        onChange={(e) =>
-                            setCharacter({
-                                ...character,
-                                name: e.target.value,
-                            })
-                        }
-                    />
-
-                    <Separator />
-
-                    <div className="character-info flex flex-wrap gap-2">
-
-                        <Badge variant="secondary">
-                            헤어 {character.hair + 1}
-                        </Badge>
-
-                        <Badge variant="secondary">
-                            눈 {character.eyes + 1}
-                        </Badge>
-
-                        <Badge variant="secondary">
-                            옷 {character.clothes + 1}
-                        </Badge>
-
-                    </div>
-
-                </CardContent>
-
-            </Card>
-
-
-            {/* 오른쪽 상세 선택 */}
-            <Card className="option-panel">
-
-                <CardHeader>
-
-                    <div className="flex items-center justify-between">
-
-                        <CardTitle>
-                            {selectedCategoryLabel}
-                        </CardTitle>
-
-                        <Badge variant="outline">
-                            {currentOptions.length}
-                        </Badge>
-
-                    </div>
-
-                </CardHeader>
-
-                <CardContent className="space-y-5">
-
-                    <div className="option-grid">
-
-                        {currentOptions.map((option, index) => {
-
-                            const isSelected =
-                                character[selectedCategory] === index
-
-                            return (
-                                <Button
-                                    key={index}
-                                    variant={
-                                        isSelected
-                                            ? "default"
-                                            : "outline"
-                                    }
-                                    className="option-button h-auto flex-col gap-2 p-3"
-                                    onClick={() =>
-                                        handleOptionSelect(index)
-                                    }
-                                >
-                                    <div className="option-thumbnail">
-                                        {index + 1}
-                                    </div>
-
-                                    <span>
-                                        {option}
-                                    </span>
-
-                                </Button>
-                            )
-                        })}
-
-                    </div>
-
-                    <Separator />
-
-                    <Button
-                        className="complete-button w-full"
-                        size="lg"
-                        onClick={handleComplete}
-                    >
-                        캐릭터 완성
-                    </Button>
-
-                </CardContent>
-
-            </Card>
-
+import { useMemo, useRef, useState } from 'react'
+import { Camera, ChevronRight, Dna, ShieldCheck, Upload, UserRound } from 'lucide-react'
+import { BODY_TYPES, deriveStats, GENDERS, STAT_LABELS, validateCharacterDraft } from '../game/character.js'
+
+const MAX_IMAGE_BYTES = 2 * 1024 * 1024
+
+function CharacterCreator({ onComplete }) {
+  const inputRef = useRef(null)
+  const [draft, setDraft] = useState({ name: '', gender: '', bodyType: 'balanced', height: 170, weight: 65, portrait: null })
+  const [errors, setErrors] = useState({})
+  const stats = useMemo(() => deriveStats(draft), [draft])
+  const update = (key, value) => setDraft((current) => ({ ...current, [key]: value }))
+
+  const readImage = (file) => {
+    if (!file) return
+    if (!file.type.startsWith('image/')) return setErrors((current) => ({ ...current, portrait: '이미지 형식만 업로드할 수 있습니다.' }))
+    if (file.size > MAX_IMAGE_BYTES) return setErrors((current) => ({ ...current, portrait: '이미지는 2MB 이하여야 합니다.' }))
+    const reader = new FileReader()
+    reader.onload = () => { update('portrait', reader.result); setErrors((current) => ({ ...current, portrait: null })) }
+    reader.onerror = () => setErrors((current) => ({ ...current, portrait: '이미지를 읽을 수 없습니다.' }))
+    reader.readAsDataURL(file)
+  }
+
+  const submit = (event) => {
+    event.preventDefault()
+    const nextErrors = validateCharacterDraft(draft)
+    setErrors(nextErrors)
+    if (!Object.keys(nextErrors).length) onComplete(draft)
+  }
+
+  return (
+    <main className="onboarding">
+      <section className="onboarding-intro">
+        <div className="brand large"><Dna /> PROJECT LIMEN</div><p className="eyebrow">SUBJECT REGISTRATION / 01</p>
+        <h1>경계 너머로<br />투입될 실험체를<br /><em>등록하십시오.</em></h1>
+        <p>생존 캐릭터는 한 번에 한 명만 운용할 수 있습니다. 신체 정보는 초기 능력과 임무 적합도에 반영됩니다.</p>
+        <div className="security-note"><ShieldCheck /><div><strong>로컬 보안 저장</strong><span>업로드 이미지는 외부로 전송되지 않으며 이 브라우저에만 저장됩니다.</span></div></div>
+      </section>
+      <form className="creator-card" onSubmit={submit}>
+        <div className="form-heading"><div><span>SUBJECT PROFILE</span><h2>기초 신원 등록</h2></div><b>01 / 01</b></div>
+        <div className="portrait-row">
+          <button type="button" className="portrait-upload" onClick={() => inputRef.current?.click()}>{draft.portrait ? <img src={draft.portrait} alt="프로필 미리보기" /> : <><UserRound /><span><Upload size={14} /> 이미지 선택</span></>}</button>
+          <div><strong>프로필 이미지</strong><p>JPG, PNG, WEBP 등 이미지 형식 · 최대 2MB</p><button type="button" className="text-button" onClick={() => inputRef.current?.click()}><Camera size={15} /> 파일 찾아보기</button></div>
+          <input ref={inputRef} hidden type="file" accept="image/*" onChange={(event) => readImage(event.target.files?.[0])} />
         </div>
-    )
+        {errors.portrait && <p className="field-error">{errors.portrait}</p>}
+        <label>식별명<input value={draft.name} maxLength={16} placeholder="1~16자" onChange={(event) => update('name', event.target.value)} /></label>
+        {errors.name && <p className="field-error">{errors.name}</p>}
+        <fieldset><legend>성별</legend><div className="choice-grid">{GENDERS.map((item) => <button type="button" className={draft.gender === item.id ? 'selected' : ''} key={item.id} onClick={() => update('gender', item.id)}>{item.label}</button>)}</div></fieldset>
+        {errors.gender && <p className="field-error">{errors.gender}</p>}
+        <fieldset><legend>체격</legend><div className="body-grid">{BODY_TYPES.map((item) => <button type="button" className={draft.bodyType === item.id ? 'selected' : ''} key={item.id} onClick={() => update('bodyType', item.id)}><strong>{item.label}</strong><span>{item.description}</span></button>)}</div></fieldset>
+        <div className="measure-grid"><label>신장 (cm)<input type="number" min="140" max="210" value={draft.height} onChange={(event) => update('height', event.target.value)} /></label><label>체중 (kg)<input type="number" min="35" max="160" value={draft.weight} onChange={(event) => update('weight', event.target.value)} /></label></div>
+        <div className="stat-preview"><span>예상 기초 능력</span><div>{Object.entries(stats).map(([key, value]) => <p key={key}><small>{STAT_LABELS[key]}</small><strong>{value}</strong></p>)}</div></div>
+        <button className="primary-action" type="submit">실험체 등록 완료 <ChevronRight /></button>
+      </form>
+    </main>
+  )
 }
 
 export default CharacterCreator
