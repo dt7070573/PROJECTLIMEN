@@ -14,6 +14,7 @@ import { applyTreatment, buyItem, consumeItem, equipItem, getEquipmentPower, res
 import { crewSeed } from './data/contracts/systemAdapter.js'
 import { applyMissionToWorld, respondToWorldEvent } from './game/world.js'
 import { applyLegacy, closeCharacterRecord, markCritical, rescueCharacter } from './game/survival.js'
+import { claimPayroll, syncClearance } from './game/employment.js'
 import { gameRepository } from './services/gameRepository.js'
 import './App.css'
 
@@ -32,13 +33,13 @@ function App() {
   const persist = (next, message) => { gameRepository.save(next); setGame(next); if (message) setNotice(message) }
   const changeCharacter = (transform, message) => { try { persist({ ...game, character: transform(game.character) }, message) } catch (error) { setNotice(error.message) } }
 
-  const handleCreate = (draft) => { if (game.character?.alive) throw new Error('생존 캐릭터는 한 명만 운용할 수 있습니다.'); persist({ ...game, character: applyLegacy(createCharacter(draft), game.legacy), activeMission: null, crew: game.crew ?? crewSeed }, '실험체 등록과 이전 기록 계승이 완료되었습니다.'); setPage('dashboard') }
+  const handleCreate = (draft) => { if (game.character?.alive) throw new Error('생존 캐릭터는 한 명만 운용할 수 있습니다.'); const character = { ...applyLegacy(createCharacter(draft), game.legacy), rank: game.clearance?.rank ?? 1 }; persist({ ...game, character, activeMission: null, crew: game.crew ?? crewSeed }, '실험체 등록과 이전 기록 계승이 완료되었습니다.'); setPage('dashboard') }
   const handleStartMission = (content, duration, options) => { if (game.activeMission?.status === 'active') throw new Error('이미 진행 중인 임무가 있습니다.'); const reserved = reserveMissionSupply(game.character, options.supplyItemId); const activeMission = startMission({ content, duration, options: { ...options, supply: reserved.supply, equipmentPower: getEquipmentPower(reserved.character, content.type) }, character: reserved.character }); persist({ ...game, character: reserved.character, activeMission }, `${duration}분 · ${activeMission.options.partySize}인 임무를 시작했습니다.`); setPage('dashboard') }
   const handleCompleteMission = () => {
     const completed = completeMission(game.activeMission, game.character)
     const intel = [...new Set([...(game.discoveredIntel ?? []), ...(completed.intel ?? [])])]
     const completedGame = { ...game, character: markCritical(applyMissionReport(game.character, completed), completed), activeMission: null, discoveredIntel: intel, reports: [completed, ...game.reports].slice(0, 20) }
-    persist(applyMissionToWorld(completedGame, completed), completed.report.headline)
+    persist(syncClearance(applyMissionToWorld(completedGame, completed)), completed.report.headline)
   }
   const respondToEvent = (eventId) => { try { persist(respondToWorldEvent(game, eventId), '월드 사건 대응 결과가 반영되었습니다.') } catch (error) { setNotice(error.message) } }
   const addCrewMessage = (text) => persist({ ...game, crew: game.crew ?? crewSeed, crewMessages: [{ id: `message-${Date.now()}`, text, author: game.character.name, createdAt: Date.now() }, ...game.crewMessages].slice(0, 20) }, '정형 메시지를 공유했습니다.')
@@ -46,11 +47,12 @@ function App() {
   const context = useMemo(() => ({ game, clock }), [game, clock])
   const handleRescue = () => persist({ ...game, character: rescueCharacter(game.character) }, '긴급 구조가 완료되었습니다. 영구 후유증을 상태 기록에서 확인하십시오.')
   const handleDeath = () => { persist(closeCharacterRecord(game), '실험체 기록이 종료되었습니다.'); setPage('creator') }
+  const handlePayroll = () => { try { persist(claimPayroll(game), '금일 사내 급여가 지급되었습니다.') } catch (error) { setNotice(error.message) } }
   if (!game.character?.alive) return <CharacterCreator onComplete={handleCreate} legacy={game.legacy} />
   if (game.character.criticalState?.status === 'critical') return <Critical character={game.character} onRescue={handleRescue} onDeath={handleDeath} />
   return <div className="app-shell"><aside className="sidebar"><div className="brand"><Dna size={20} /><span>LIMEN</span></div><div className="subject-chip">{game.character.portrait ? <img src={game.character.portrait} alt="" /> : <UserRound />}<div><strong>{game.character.name}</strong><small>RANK {String(game.character.rank).padStart(2, '0')} · LV.{game.character.level}</small></div></div><nav>{NAV.map(({ id, label, icon: Icon }) => <button className={page === id ? 'active' : ''} key={id} onClick={() => setPage(id)}><Icon size={18} />{label}</button>)}</nav><div className="sidebar-foot"><span className="status-dot" />LOCAL SECURE NODE<small>v0.2 · OFFLINE MVP</small></div></aside>
     <main className="main-frame"><header className="topbar"><div><span className="eyebrow">PROJECT LIMEN / INTERNAL</span><strong>{NAV.find((item) => item.id === page)?.label}</strong></div><time>{new Date(clock).toLocaleString('ko-KR')}</time></header>{notice && <button className="notice" onClick={() => setNotice('')}>{notice}<span>닫기 ×</span></button>}
-      {page === 'dashboard' && <Home {...context} onCompleteMission={handleCompleteMission} canComplete={game.activeMission ? canCompleteMission(game.activeMission, clock) : false} onNavigate={setPage} onRespondEvent={respondToEvent} />}
+      {page === 'dashboard' && <Home {...context} onCompleteMission={handleCompleteMission} canComplete={game.activeMission ? canCompleteMission(game.activeMission, clock) : false} onNavigate={setPage} onRespondEvent={respondToEvent} onPayroll={handlePayroll} />}
       {page === 'missions' && <Daily {...context} onStartMission={handleStartMission} />}
       {page === 'condition' && <Profile {...context} onTreat={(id) => changeCharacter((character) => applyTreatment(character, id, Boolean(game.activeMission)), '치료가 완료되었습니다.')} onSelectTitle={(name) => changeCharacter((character) => selectTitle(character, name), '활성 칭호를 변경했습니다.')} />}
       {page === 'store' && <Store {...context} onBuy={(item) => changeCharacter((character) => buyItem(character, item), `${item.name}을 구매했습니다.`)} onEquip={(item) => changeCharacter((character) => equipItem(character, item), `${item.name}을 장착했습니다.`)} onUse={(item) => changeCharacter((character) => consumeItem(character, item), `${item.name}을 사용했습니다.`)} />}
