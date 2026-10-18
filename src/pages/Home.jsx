@@ -8,7 +8,7 @@ const remainingText = (mission, now) => {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
-function Home({ game, clock, onCompleteMission, canComplete, onNavigate }) {
+function Home({ game, clock, onCompleteMission, canComplete, onNavigate, onRespondEvent }) {
   const { character, activeMission, reports } = game
   const condition = character.condition
   return (
@@ -21,6 +21,8 @@ function Home({ game, clock, onCompleteMission, canComplete, onNavigate }) {
         <article className="metric"><ShieldAlert /><span>정보 오염</span><strong>{condition.anomaly.informationContamination}<small>%</small></strong><i className="safe" style={{ width: `${condition.anomaly.informationContamination}%` }} /></article>
         <article className="metric"><Coins /><span>보유 크레딧</span><strong>{character.credits}<small>CR</small></strong><i style={{ width: `${Math.min(100, character.credits / 5)}%` }} /></article>
       </div>
+
+      {(game.worldEvents ?? []).some((event) => event.status === 'active') && <section className="world-events"><div className="world-heading"><div><span className="eyebrow">FACILITY-WIDE EMERGENCY</span><h2>격리 이탈 경보</h2></div><strong>실시간 임무</strong></div>{game.worldEvents.filter((event) => event.status === 'active').map((event) => <article key={event.id}><div><span>{event.code} · 위험도 {event.severity}</span><h3>{event.name}</h3><p>관리 연속 실패로 개체가 격리 구역을 이탈했습니다. 진압·구조·관측 인력이 필요합니다.</p></div><div className="event-action"><div><span>연구소 대응도</span><strong>{event.progress} / {event.target}</strong></div><i><b style={{ width: `${event.progress}%` }} /></i><button disabled={Boolean(activeMission)} onClick={() => onRespondEvent(event.id)}>{activeMission ? '현재 임무 수행 중' : '대응 임무 참여'}</button></div></article>)}</section>}
 
       <div className="dashboard-grid">
         <article className="panel mission-live">

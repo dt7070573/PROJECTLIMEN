@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'project-limen:mvp:v2'
 const LEGACY_KEY = 'project-limen:mvp:v1'
 
-const emptyState = () => ({ version: 2, character: null, activeMission: null, reports: [], discoveredIntel: [], crew: null, crewMessages: [], crewContributions: 0 })
+const emptyState = () => ({ version: 2, character: null, activeMission: null, reports: [], discoveredIntel: [], crew: null, crewMessages: [], crewContributions: 0, containmentStreaks: {}, worldEvents: [] })
 
 const defaultBodyParts = () => Object.fromEntries(['head', 'torso', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'].map((id) => [id, { integrity: 100, injury: null, permanent: false }]))
 

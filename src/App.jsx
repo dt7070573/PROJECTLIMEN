@@ -11,6 +11,7 @@ import { completeMission, applyMissionReport, canCompleteMission, startMission }
 import { createCharacter } from './game/character.js'
 import { applyTreatment, buyItem, consumeItem, equipItem, getEquipmentPower, selectTitle } from './game/systems.js'
 import { crewSeed } from './data/contracts/systemAdapter.js'
+import { applyMissionToWorld, respondToWorldEvent } from './game/world.js'
 import { gameRepository } from './services/gameRepository.js'
 import './App.css'
 
@@ -34,15 +35,17 @@ function App() {
   const handleCompleteMission = () => {
     const completed = completeMission(game.activeMission, game.character)
     const intel = [...new Set([...(game.discoveredIntel ?? []), ...(completed.intel ?? [])])]
-    persist({ ...game, character: applyMissionReport(game.character, completed), activeMission: null, discoveredIntel: intel, reports: [completed, ...game.reports].slice(0, 20) }, completed.report.headline)
+    const completedGame = { ...game, character: applyMissionReport(game.character, completed), activeMission: null, discoveredIntel: intel, reports: [completed, ...game.reports].slice(0, 20) }
+    persist(applyMissionToWorld(completedGame, completed), completed.report.headline)
   }
+  const respondToEvent = (eventId) => { try { persist(respondToWorldEvent(game, eventId), '월드 사건 대응 결과가 반영되었습니다.') } catch (error) { setNotice(error.message) } }
   const addCrewMessage = (text) => persist({ ...game, crew: game.crew ?? crewSeed, crewMessages: [{ id: `message-${Date.now()}`, text, author: game.character.name, createdAt: Date.now() }, ...game.crewMessages].slice(0, 20) }, '정형 메시지를 공유했습니다.')
   const contribute = () => { if (game.character.credits < 10) return setNotice('기여에 필요한 10 CR이 부족합니다.'); persist({ ...game, character: { ...game.character, credits: game.character.credits - 10 }, crew: game.crew ?? crewSeed, crewContributions: game.crewContributions + 10 }, '공동 목표에 10점을 기여했습니다.') }
   const context = useMemo(() => ({ game, clock }), [game, clock])
   if (!game.character?.alive) return <CharacterCreator onComplete={handleCreate} />
   return <div className="app-shell"><aside className="sidebar"><div className="brand"><Dna size={20} /><span>LIMEN</span></div><div className="subject-chip">{game.character.portrait ? <img src={game.character.portrait} alt="" /> : <UserRound />}<div><strong>{game.character.name}</strong><small>RANK {String(game.character.rank).padStart(2, '0')} · LV.{game.character.level}</small></div></div><nav>{NAV.map(({ id, label, icon: Icon }) => <button className={page === id ? 'active' : ''} key={id} onClick={() => setPage(id)}><Icon size={18} />{label}</button>)}</nav><div className="sidebar-foot"><span className="status-dot" />LOCAL SECURE NODE<small>v0.2 · OFFLINE MVP</small></div></aside>
     <main className="main-frame"><header className="topbar"><div><span className="eyebrow">PROJECT LIMEN / INTERNAL</span><strong>{NAV.find((item) => item.id === page)?.label}</strong></div><time>{new Date(clock).toLocaleString('ko-KR')}</time></header>{notice && <button className="notice" onClick={() => setNotice('')}>{notice}<span>닫기 ×</span></button>}
-      {page === 'dashboard' && <Home {...context} onCompleteMission={handleCompleteMission} canComplete={game.activeMission ? canCompleteMission(game.activeMission, clock) : false} onNavigate={setPage} />}
+      {page === 'dashboard' && <Home {...context} onCompleteMission={handleCompleteMission} canComplete={game.activeMission ? canCompleteMission(game.activeMission, clock) : false} onNavigate={setPage} onRespondEvent={respondToEvent} />}
       {page === 'missions' && <Daily {...context} onStartMission={handleStartMission} />}
       {page === 'condition' && <Profile {...context} onTreat={(id) => changeCharacter((character) => applyTreatment(character, id, Boolean(game.activeMission)), '치료가 완료되었습니다.')} onSelectTitle={(name) => changeCharacter((character) => selectTitle(character, name), '활성 칭호를 변경했습니다.')} />}
       {page === 'store' && <Store {...context} onBuy={(item) => changeCharacter((character) => buyItem(character, item), `${item.name}을 구매했습니다.`)} onEquip={(item) => changeCharacter((character) => equipItem(character, item), `${item.name}을 장착했습니다.`)} onUse={(item) => changeCharacter((character) => consumeItem(character, item), `${item.name}을 사용했습니다.`)} />}
