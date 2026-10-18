@@ -71,3 +71,16 @@ export function getEquipmentPower(character, missionType) {
     return total + Number(effects[missionType] ?? 0) + Number(effects.analysis ?? 0) * 0.5 + Number(effects.anomalyGuard ?? 0) * 0.35
   }, 0)
 }
+
+export function reserveMissionSupply(character, itemId) {
+  if (!itemId) return { character, supply: null }
+  const item = storeItems.find((entry) => entry.id === itemId)
+  const owned = (character.inventory ?? []).find((entry) => entry.itemId === itemId)
+  if (item?.type !== 'consumable' || !owned?.quantity) throw new Error('자동 소비용 물자를 보유하고 있지 않습니다.')
+  const inventory = character.inventory
+    .map((entry) => entry.itemId === itemId ? { ...entry, quantity: entry.quantity - 1 } : entry)
+    .filter((entry) => entry.quantity > 0)
+  const effects = item.effects ?? {}
+  const protection = Number(Boolean(effects.physical)) + Number(Boolean(effects.mental)) + Number(Boolean(effects.informationContamination))
+  return { character: { ...character, inventory }, supply: { itemId, name: item.name, protection } }
+}

@@ -30,7 +30,7 @@ function Home({ game, clock, onCompleteMission, canComplete, onNavigate, onRespo
           {!activeMission ? <div className="empty-state"><Clock3 /><strong>대기 상태</strong><p>현재 수행 중인 임무가 없습니다.</p><button onClick={() => onNavigate('missions')}>임무 선택 <ArrowRight /></button></div> : <>
             <div className="mission-code">{activeMission.code} / {activeMission.type === 'containment' ? '격리 개체 관리' : '단계형 공간 탐사'}</div>
             <h3>{activeMission.name}</h3><p>{activeMission.duration}분 자동 임무 · 위험도 {activeMission.risk}</p>
-            <div className="mission-orders"><span>{activeMission.options?.approach === 'cautious' ? '안전 우선' : activeMission.options?.approach === 'assertive' ? '성과 우선' : '표준 절차'}</span><span>철수 {activeMission.options?.retreatThreshold ?? 50}%</span><span>단서 {activeMission.options?.appliedIntel?.length ?? 0}건</span></div>
+            <div className="mission-orders"><span>{activeMission.options?.approach === 'cautious' ? '안전 우선' : activeMission.options?.approach === 'assertive' ? '성과 우선' : '표준 절차'}</span><span>{activeMission.options?.partySize ?? 1}인 편성</span><span>철수 {activeMission.options?.retreatThreshold ?? 50}%</span><span>단서 {activeMission.options?.appliedIntel?.length ?? 0}건</span>{activeMission.options?.supply && <span>자동 소비 · {activeMission.options.supply.name}</span>}</div>
             <div className="progress"><i style={{ width: `${missionProgress(activeMission, clock) * 100}%` }} /></div>
             <div className="mission-time"><span>남은 시간</span><strong>{remainingText(activeMission, clock)}</strong></div>
             <button className="primary-action" disabled={!canComplete} onClick={onCompleteMission}>{canComplete ? '완료 보고 확인' : '임무 진행 중'}</button>

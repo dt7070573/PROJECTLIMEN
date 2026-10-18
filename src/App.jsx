@@ -10,7 +10,7 @@ import Crew from './pages/Crew.jsx'
 import Critical from './pages/Critical.jsx'
 import { completeMission, applyMissionReport, canCompleteMission, startMission } from './game/mission.js'
 import { createCharacter } from './game/character.js'
-import { applyTreatment, buyItem, consumeItem, equipItem, getEquipmentPower, selectTitle } from './game/systems.js'
+import { applyTreatment, buyItem, consumeItem, equipItem, getEquipmentPower, reserveMissionSupply, selectTitle } from './game/systems.js'
 import { crewSeed } from './data/contracts/systemAdapter.js'
 import { applyMissionToWorld, respondToWorldEvent } from './game/world.js'
 import { applyLegacy, closeCharacterRecord, markCritical, rescueCharacter } from './game/survival.js'
@@ -33,7 +33,7 @@ function App() {
   const changeCharacter = (transform, message) => { try { persist({ ...game, character: transform(game.character) }, message) } catch (error) { setNotice(error.message) } }
 
   const handleCreate = (draft) => { if (game.character?.alive) throw new Error('생존 캐릭터는 한 명만 운용할 수 있습니다.'); persist({ ...game, character: applyLegacy(createCharacter(draft), game.legacy), activeMission: null, crew: game.crew ?? crewSeed }, '실험체 등록과 이전 기록 계승이 완료되었습니다.'); setPage('dashboard') }
-  const handleStartMission = (content, duration, options) => { if (game.activeMission?.status === 'active') throw new Error('이미 진행 중인 임무가 있습니다.'); persist({ ...game, activeMission: startMission({ content, duration, options: { ...options, equipmentPower: getEquipmentPower(game.character, content.type) }, character: game.character }) }, `${duration}분 임무를 시작했습니다.`); setPage('dashboard') }
+  const handleStartMission = (content, duration, options) => { if (game.activeMission?.status === 'active') throw new Error('이미 진행 중인 임무가 있습니다.'); const reserved = reserveMissionSupply(game.character, options.supplyItemId); const activeMission = startMission({ content, duration, options: { ...options, supply: reserved.supply, equipmentPower: getEquipmentPower(reserved.character, content.type) }, character: reserved.character }); persist({ ...game, character: reserved.character, activeMission }, `${duration}분 · ${activeMission.options.partySize}인 임무를 시작했습니다.`); setPage('dashboard') }
   const handleCompleteMission = () => {
     const completed = completeMission(game.activeMission, game.character)
     const intel = [...new Set([...(game.discoveredIntel ?? []), ...(completed.intel ?? [])])]

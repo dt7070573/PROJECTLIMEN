@@ -16,6 +16,8 @@ const APPROACHES = {
 export function startMission({ content, duration, character, options = {}, now = Date.now() }) {
   if (!content.durations.includes(duration)) throw new Error('지원하지 않는 임무 시간입니다.')
   if (character.rank < content.minRank) throw new Error('사내 등급이 부족합니다.')
+  const partySize = Number(options.partySize ?? content.party?.recommended ?? 1)
+  if (partySize < (content.party?.min ?? 1) || partySize > (content.party?.max ?? 1)) throw new Error('허용되지 않는 임무 편성입니다.')
   return {
     id: `mission-${now}`,
     contentId: content.id,
@@ -37,6 +39,9 @@ export function startMission({ content, duration, character, options = {}, now =
       appliedIntel: (options.appliedIntel ?? []).filter((clue) => content.intel.includes(clue)),
       autoSupply: Boolean(options.autoSupply),
       equipmentPower: Number(options.equipmentPower ?? 0),
+      partySize,
+      recommendedParty: content.party?.recommended ?? 1,
+      supply: options.supply ?? null,
     },
     report: null,
   }
@@ -58,17 +63,20 @@ export function completeMission(mission, character, now = Date.now()) {
   const coreStat = mission.type === 'containment' ? character.stats.analysis : character.stats.perception
   const skill = character.skills[mission.type] ?? 0
   const requirementAverage = Object.values(mission.requirements ?? {}).reduce((sum, value) => sum + Number(value), 0) / Math.max(1, Object.keys(mission.requirements ?? {}).length)
+  const partyDelta = Number(mission.options?.partySize ?? 1) - Number(mission.options?.recommendedParty ?? 1)
+  const partyBonus = clamp(partyDelta * 0.045, -0.16, 0.14)
   const readiness = (coreStat + skill + Number(mission.options?.equipmentPower ?? 0) - requirementAverage) / 24
   const knownIntel = mission.options?.appliedIntel?.length ?? 0
   const intelBonus = Math.min(0.42, knownIntel * 0.24)
   const conditionPenalty = ((100 - character.condition.physical) + (100 - character.condition.mental) + character.condition.fatigue) / 650
-  const successScore = roll + readiness + intelBonus + approach.success - conditionPenalty
+  const successScore = roll + readiness + intelBonus + partyBonus + approach.success - conditionPenalty
   const target = 0.36 + mission.risk * 0.085
   const success = successScore >= target
   const durationScale = 0.75 + mission.duration / 240
   const xp = Math.round((mission.rewards?.xp ?? 25) * durationScale * approach.reward * (success ? 1 : 0.55))
   const credits = Math.round((mission.rewards?.credits ?? 30) * durationScale * approach.reward * (success ? 1 : 0.35))
-  const intelProtection = Math.max(0.45, 1 - knownIntel * 0.2)
+  const supplyProtection = Math.min(0.2, Number(mission.options?.supply?.protection ?? 0) * 0.08)
+  const intelProtection = Math.max(0.35, 1 - knownIntel * 0.2 - supplyProtection)
   const physicalLoss = Math.round((success ? mission.risk * 2 : mission.risk * 5) * approach.damage * intelProtection)
   const mentalLoss = Math.round((success ? mission.risk : mission.risk * 4) * approach.damage * intelProtection)
   const safetyTriggered = character.condition.physical - physicalLoss <= (mission.options?.retreatThreshold ?? 50)
@@ -83,8 +91,9 @@ export function completeMission(mission, character, now = Date.now()) {
       success ? `${mission.name}의 핵심 절차를 완료했습니다.` : `${mission.name}에서 위험 징후를 확인하고 철수했습니다.`,
       knownIntel ? `확보 단서 ${knownIntel}건이 판정에 크게 기여했습니다.` : '검증된 사전 단서 없이 현장 판단으로 진행했습니다.',
       `${approach.label} 방침과 신체 ${mission.options?.retreatThreshold ?? 50}% 철수 기준을 적용했습니다.`,
+      `${mission.options?.partySize ?? 1}인 비동기 편성${mission.options?.supply ? `과 ${mission.options.supply.name} 자동 소비` : ''}으로 수행했습니다.`,
     ],
-    factors: { successScore: Number(successScore.toFixed(2)), target: Number(target.toFixed(2)), knownIntel, approach: mission.options?.approach ?? 'standard' },
+    factors: { successScore: Number(successScore.toFixed(2)), target: Number(target.toFixed(2)), knownIntel, partySize: mission.options?.partySize ?? 1, partyBonus: Number(partyBonus.toFixed(2)), approach: mission.options?.approach ?? 'standard' },
     gains: { xp, credits },
     losses: { physical: physicalLoss, mental: mentalLoss, bodyPart: damagedPart, bodyPartDamage: Math.max(1, physicalLoss * 2) },
   }
