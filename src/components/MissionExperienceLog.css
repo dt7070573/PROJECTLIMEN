@@ -17,6 +17,11 @@
 .experience-await { opacity: .7; }
 .experience-console > footer { padding: 0 28px; border-top: 1px solid #252a2b; color: #747c7b; display: flex; align-items: center; font-size: 13px; }
 .experience-console > footer strong { color: #aab4b2; margin: 0 3px; }
+.developer-tools { margin-top: 10px; padding: 10px; border: 1px dashed #9a6500; background: #211b12; color: #d8b46e; }
+.developer-tools summary { cursor: pointer; font: 700 10px ui-monospace, monospace; letter-spacing: .08em; }
+.developer-tools p { margin: 9px 0; color: #aa9876; font-size: 10px; line-height: 1.5; }
+.developer-tools button { width: 100%; min-height: 36px; border: 1px solid #9a6500; background: transparent; color: #f0c87c; cursor: pointer; }
+.developer-tools button:hover { background: #9a6500; color: #0d1010; }
 
 @keyframes experience-pulse { 50% { opacity: .35; } }
 @keyframes experience-caret { 50% { opacity: 0; } }

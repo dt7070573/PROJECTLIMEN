@@ -6,8 +6,8 @@ const timeLabel = (timestamp) => new Date(timestamp).toLocaleTimeString('ko-KR',
 
 function MissionExperienceLog({ mission, clock }) {
   const scrollRef = useRef(null)
-  const visible = useMemo(() => visibleMissionExperiences(mission, clock), [mission, clock])
-  const next = mission.experiences?.find((entry) => entry.occursAt > clock)
+  const visible = useMemo(() => mission.status === 'completed' ? (mission.experiences ?? []) : visibleMissionExperiences(mission, clock), [mission, clock])
+  const next = mission.status === 'active' ? mission.experiences?.find((entry) => entry.occursAt > clock) : null
 
   useEffect(() => {
     const container = scrollRef.current

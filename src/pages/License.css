@@ -1,0 +1,26 @@
+.license-page { max-width: 1180px; }
+.license-section { margin-bottom: 42px; border-top: 1px solid var(--line-strong, var(--line)); }
+.license-section > header { display: grid; grid-template-columns: 72px 1fr; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.license-section > header > span { color: var(--accent); font: 700 12px ui-monospace, monospace; }
+.license-section h2 { margin: 0 0 7px; font-size: 25px; }
+.license-section header p { margin: 0; color: var(--muted); }
+.license-list { display: grid; grid-template-columns: repeat(2, 1fr); }
+.license-list article { min-height: 260px; padding: 26px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.license-list article:nth-child(2n) { border-right: 0; }
+.license-name { display: flex; gap: 13px; align-items: start; }
+.license-name svg { width: 19px; color: var(--accent); }
+.license-name h3 { margin: 0 0 4px; font-size: 19px; }
+.license-name span { color: var(--muted); font-size: 11px; }
+.license-list article > p { color: var(--text); font-size: 13px; line-height: 1.65; }
+.license-list .license-modification { color: var(--muted); font-size: 11px; }
+.license-list footer { display: flex; gap: 18px; margin-top: 24px; }
+.license-list a, .license-texts a { color: var(--accent); font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
+.license-list a svg, .license-texts a svg { width: 13px; }
+.license-texts > div { display: grid; grid-template-columns: repeat(3, 1fr); }
+.license-texts details { padding: 20px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.license-texts details:last-child { border-right: 0; }
+.license-texts summary { cursor: pointer; display: flex; justify-content: space-between; gap: 12px; }
+.license-texts summary span { color: var(--muted); font-size: 11px; }
+.license-texts details p { color: var(--muted); font-size: 12px; line-height: 1.65; }
+.license-scope { padding: 18px; border: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.7; }
+@media (max-width: 720px) { .sidebar nav { grid-template-columns: repeat(7, minmax(0, 1fr)); }.license-section > header { grid-template-columns: 42px 1fr; }.license-list, .license-texts > div { grid-template-columns: 1fr; }.license-list article, .license-texts details { min-height: auto; border-right: 0; }.license-list footer { flex-direction: column; gap: 10px; } }

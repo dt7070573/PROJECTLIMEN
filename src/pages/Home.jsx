@@ -10,7 +10,7 @@ const remainingText = (mission, now) => {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
-function Home({ game, clock, onCompleteMission, canComplete, onNavigate, onRespondEvent, onPayroll }) {
+function Home({ game, clock, onCompleteMission, onDeveloperComplete, canComplete, onNavigate, onRespondEvent, onPayroll }) {
   const { character, activeMission, reports } = game
   const condition = character.condition
   const payroll = payrollStatus(game, clock)
@@ -37,13 +37,14 @@ function Home({ game, clock, onCompleteMission, canComplete, onNavigate, onRespo
             <div className="progress"><i style={{ width: `${missionProgress(activeMission, clock) * 100}%` }} /></div>
             <div className="mission-time"><span>남은 시간</span><strong>{remainingText(activeMission, clock)}</strong></div>
             <button className="primary-action" disabled={!canComplete} onClick={onCompleteMission}>{canComplete ? '완료 보고 확인' : '임무 진행 중'}</button>
+            <details className="developer-tools"><summary>개발자 도구</summary><p>남은 시간을 건너뛰고 일반 완료 판정과 동일하게 보상·부상·획득물을 적용합니다.</p><button onClick={onDeveloperComplete}>DEV · 시간 가속 후 즉시 종료</button></details>
           </>}
         </article>
 
         <article className="panel growth-card"><div className="panel-title"><div><span className="eyebrow">PERSONNEL RECORD</span><h2>성장 기록</h2></div><span>{character.title}</span></div><div className="level"><strong>LV.{character.level}</strong><span>{character.xp} / {character.level * 100} XP</span></div><div className="progress"><i style={{ width: `${character.xp / (character.level * 100) * 100}%` }} /></div><dl><div><dt>사내 등급 · 계정</dt><dd>{game.clearance?.rank ?? character.rank} / 45</dd></div><div><dt>관리 숙련</dt><dd>{character.skills.containment}</dd></div><div><dt>탐사 숙련</dt><dd>{character.skills.exploration}</dd></div><div><dt>획득 칭호</dt><dd>{character.unlockedTitles.length}</dd></div></dl><button className="payroll-button" disabled={!payroll.available} onClick={onPayroll}>{payroll.available ? `등급 급여 수령 · ${payroll.amount} CR` : `다음 급여 · ${new Date(payroll.nextAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`}</button></article>
       </div>
 
-      {activeMission && <MissionExperienceLog mission={activeMission} clock={clock} />}
+      {(activeMission ?? reports[0]) && <MissionExperienceLog mission={activeMission ?? reports[0]} clock={clock} />}
 
       <article className="panel reports"><div className="panel-title"><div><span className="eyebrow">AFTER-ACTION</span><h2>최근 완료 보고</h2></div></div>{reports.length === 0 ? <p className="muted">아직 제출된 보고가 없습니다.</p> : reports.slice(0, 4).map((mission) => <div className="report-row" key={mission.id}><span className={mission.report.outcome}>{mission.report.outcome === 'success' ? '성공' : '부분'}</span><div><strong>{mission.name}</strong><small>{mission.report.lines[0]}</small></div><time>{new Date(mission.report.completedAt).toLocaleString('ko-KR')}</time><b>+{mission.report.gains.xp} XP</b></div>)}</article>
     </section>

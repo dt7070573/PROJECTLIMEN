@@ -59,8 +59,8 @@ export function canCompleteMission(mission, now = Date.now()) {
   return mission.status === 'active' && now >= mission.completesAt
 }
 
-export function completeMission(mission, character, now = Date.now()) {
-  if (!canCompleteMission(mission, now)) throw new Error('임무가 아직 진행 중입니다.')
+export function completeMission(mission, character, now = Date.now(), options = {}) {
+  if (!options.developerOverride && !canCompleteMission(mission, now)) throw new Error('임무가 아직 진행 중입니다.')
   const approach = APPROACHES[mission.options?.approach] ?? APPROACHES.standard
   const roll = seededFraction(mission.startedAt + mission.duration + character.stats.will)
   const coreStat = mission.type === 'containment' ? character.stats.analysis : character.stats.perception
@@ -96,8 +96,13 @@ export function completeMission(mission, character, now = Date.now()) {
       `${approach.label} 방침과 신체 ${mission.options?.retreatThreshold ?? 50}% 철수 기준을 적용했습니다.`,
       `${mission.options?.partySize ?? 1}인 비동기 편성${mission.options?.supply ? `과 ${mission.options.supply.name} 자동 소비` : ''}으로 수행했습니다.`,
     ],
-    factors: { successScore: Number(successScore.toFixed(2)), target: Number(target.toFixed(2)), knownIntel, partySize: mission.options?.partySize ?? 1, partyBonus: Number(partyBonus.toFixed(2)), approach: mission.options?.approach ?? 'standard' },
-    gains: { xp, credits },
+    factors: { successScore: Number(successScore.toFixed(2)), target: Number(target.toFixed(2)), knownIntel, partySize: mission.options?.partySize ?? 1, partyBonus: Number(partyBonus.toFixed(2)), approach: mission.options?.approach ?? 'standard', developerOverride: Boolean(options.developerOverride) },
+    gains: {
+      xp,
+      credits,
+      items: (mission.experiences ?? []).filter((entry) => entry.outcome?.type === 'item').map((entry) => entry.outcome),
+      intel: (mission.experiences ?? []).filter((entry) => entry.outcome?.type === 'intel').map((entry) => entry.outcome.text),
+    },
     losses: { physical: physicalLoss, mental: mentalLoss, bodyPart: damagedPart, bodyPartDamage: Math.max(1, physicalLoss * 2) },
   }
   return { ...mission, status: 'completed', report }
@@ -130,11 +135,18 @@ export function applyMissionReport(character, mission) {
     const integrity = clamp(bodyParts[partId].integrity - losses.bodyPartDamage, 0, 100)
     bodyParts[partId] = { ...bodyParts[partId], integrity, injury: integrity < 25 ? '중증 기능 손상' : integrity < 55 ? '골절·심부 손상' : integrity < 85 ? '타박·열상' : null, permanent: bodyParts[partId].permanent || integrity <= 10 }
   }
+  const inventory = (character.inventory ?? []).map((entry) => ({ ...entry }))
+  for (const finding of gains.items ?? []) {
+    const owned = inventory.find((entry) => entry.itemId === finding.itemId)
+    if (owned) owned.quantity += finding.quantity
+    else inventory.push({ itemId: finding.itemId, quantity: finding.quantity })
+  }
   return {
     ...character,
     level,
     xp,
     credits: character.credits + gains.credits,
+    inventory,
     title: unlockedTitles.at(-1),
     unlockedTitles,
     progress,
