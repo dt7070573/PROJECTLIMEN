@@ -42,6 +42,7 @@ function createSchedule(startedAt, duration, count, combatIndex, random) {
     const jitter = (random() - 0.5) * base * 0.5
     return Math.round(startedAt + base * (index + 1) + jitter)
   }).sort((a, b) => a - b)
+  times[0] = startedAt + 30000 + Math.floor(random() * 60001)
   if (combatIndex >= 1 && combatIndex + 3 < count) {
     const anchor = times[combatIndex]
     times[combatIndex + 1] = anchor + 30000 + Math.floor(random() * 60001)

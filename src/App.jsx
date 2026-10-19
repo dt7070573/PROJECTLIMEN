@@ -17,6 +17,7 @@ import { applyLegacy, closeCharacterRecord, markCritical, rescueCharacter } from
 import { claimPayroll, syncClearance } from './game/employment.js'
 import { gameRepository } from './services/gameRepository.js'
 import './App.css'
+import './components/MissionExperienceLog.css'
 
 const NAV = [
   { id: 'dashboard', label: '상황실', icon: LayoutDashboard }, { id: 'missions', label: '임무 배정', icon: ClipboardList },
