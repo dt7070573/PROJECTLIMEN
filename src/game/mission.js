@@ -1,4 +1,5 @@
 import { titles } from '../data/contracts/contentAdapter.js'
+import { generateMissionExperiences } from './experience.js'
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 
@@ -18,6 +19,7 @@ export function startMission({ content, duration, character, options = {}, now =
   if (character.rank < content.minRank) throw new Error('사내 등급이 부족합니다.')
   const partySize = Number(options.partySize ?? content.party?.recommended ?? 1)
   if (partySize < (content.party?.min ?? 1) || partySize > (content.party?.max ?? 1)) throw new Error('허용되지 않는 임무 편성입니다.')
+  const experiences = generateMissionExperiences(content, duration, now, `${content.id}:${now}:${character.id}`)
   return {
     id: `mission-${now}`,
     contentId: content.id,
@@ -33,6 +35,7 @@ export function startMission({ content, duration, character, options = {}, now =
     hazards: content.hazards,
     intel: content.intel,
     requirements: content.requirementScores ?? {},
+    experiences,
     options: {
       approach: options.approach ?? 'standard',
       retreatThreshold: Number(options.retreatThreshold ?? 50),

@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "validate:content": "node scripts/validateContent.mjs",
+    "validate:content": "node scripts/validateContent.mjs && node scripts/validateExperiences.mjs",
     "check": "npm run validate:content && npm run lint && npm run build"
   },
   "dependencies": {
