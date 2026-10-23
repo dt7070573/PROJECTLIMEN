@@ -215,6 +215,63 @@ body { color: var(--text); }
   .onboarding-intro { background: var(--accent); }
 }
 
+/* Monochrome surveillance palette */
+.eyebrow { display: none !important; }
+.app-shell, body { background: #0b0b0c; }
+.sidebar { background: #111112; border-color: #363638; }
+.brand { color: #f1f1ef; }
+.subject-chip { border-color: #3c3c3e; }
+.subject-chip img, .subject-chip > svg { border-color: #67676b; background: #181819; color: var(--accent); }
+.sidebar nav button { color: #8e8e90; }
+.sidebar nav button:hover { border-color: #77777a; background: #1b1b1d; color: #f2f2f0; }
+.sidebar nav button.active { border-color: var(--accent); background: #211412; color: #fff; }
+.status-dot, .topbar-status i, .zone-network i { background: var(--accent); box-shadow: 0 0 9px #f0522c88; }
+.topbar { background: #101011f5; border-color: #353537; }
+.topbar-status > span { color: #949496; }
+.notice { background: #28120e; border-color: #743521; }
+.page-heading { border-color: #343436; }
+.page-heading h1 { font-size: clamp(36px, 4vw, 58px); color: #f2f2f0; }
+.panel, .metric, .mission-card, .experience-console, .zone-console, .coop-intro, .coop-roster, .coop-settings, .coop-status, .coop-complete { background: #151516; border-color: #373739; }
+.metric-grid, .zone-workspace { border-color: #5a5a5d; }
+.metric { background: #161617; border-color: #353537; }
+.metric svg, .item-card > svg, .inventory-row svg { color: #d6d6d3; }
+.metric > i, .progress i, .gauge b, .stats-panel p b, .body-part-grid b { background: var(--accent); }
+.primary-action { border-color: var(--accent); background: var(--accent); color: #fff; }
+.primary-action:hover { background: var(--accent-hover); color: #fff; }
+.zone-toolbar { background: #131314; border-color: #4b4b4e; }
+.zone-toolbar input, .zone-toolbar select { border-color: #3c3c3e; color: #e9e9e7; }
+.zone-directory { background: #111112; border-color: #555558; }
+.zone-row { border-color: #323234; }
+.zone-row:hover { background: #1d1d1f; }
+.zone-row.selected { background: #2c1814; }
+.zone-row.selected::before { background: var(--accent); }
+.zone-identity small, .panel-title > span, .mission-code, .live-badge, .report-row b, .reward strong { color: var(--accent) !important; }
+.risk { border-color: #646468; color: #adadaf; }
+.risk-3 { border-color: #806634; color: #d7ad59; }
+.risk-4, .risk-5 { border-color: #984431; color: #ff7452; }
+.zone-map { background: #202022; border-color: #525255; }
+.zone-map::before { opacity: .36; background-image: linear-gradient(#3a3a3d 1px, transparent 1px), linear-gradient(90deg, #3a3a3d 1px, transparent 1px); }
+.map-line { background: #77777a; }
+.map-node i { border-color: var(--accent); background: #1a1a1c; box-shadow: 0 0 10px #f0522c88; }
+.map-node.signal i { border-color: #e0aa46; box-shadow: 0 0 10px #e0aa4688; }
+.map-node.depth i { border-color: #ff4936; box-shadow: 0 0 10px #ff493688; }
+.zone-facts, .zone-facts > div, .deployment-grid fieldset, .unit-choice button, .segmented button, .duration-strip button { border-color: #3b3b3d; }
+.deployment-grid select { background: #202022; }
+.unit-choice button.selected, .segmented button.selected, .duration-strip button.selected { border-color: var(--accent); background: #321813; }
+.coop-intro blockquote { border-color: var(--accent); background: #28130f; }
+.role-grid button.selected { border-color: var(--accent); background: #321813; }
+.developer-box { background: #111112; }
+.world-events { background: #1d1010; border-color: #71392f; }
+.world-heading { background: #30130f; border-color: #71392f; }
+.body-part-grid > div, .voice-grid blockquote { background: #1b1b1d; }
+.experience-viewport li.loot p, .experience-viewport li.clue p { color: #ff7757; }
+.experience-console header i { background: var(--accent); }
+.onboarding-intro { background: #151516; border-color: #454548; }
+.onboarding-intro .brand, .onboarding-intro h1 { color: #f2f2f0; }
+.onboarding-intro h1 em, .portrait-upload span, .text-button { color: var(--accent); }
+.security-note { border-color: #4a4a4d; color: var(--accent); }
+.critical-screen { background: #0b0b0c; }
+
 /* Four-person shared mission simulator */
 .coop-intro { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; align-items: end; }
 .coop-intro h2 { margin: 8px 0; font-size: 34px; }
@@ -351,9 +408,9 @@ body { color: var(--text); background: var(--bg); }
 .zone-toolbar input, .zone-toolbar select { width: 100%; height: 100%; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--text); outline: 0; }
 .zone-toolbar select { padding: 0 12px; }
 .zone-toolbar > span { min-width: 100px; display: grid; place-items: center; color: var(--muted); font: 10px ui-monospace, monospace; }
-.zone-workspace { display: grid; grid-template-columns: minmax(420px, .82fr) minmax(560px, 1.18fr); min-height: 720px; margin-top: 12px; border: 1px solid var(--line-strong); }
+.zone-workspace { display: grid; grid-template-columns: minmax(340px, .76fr) minmax(460px, 1.24fr); min-height: 720px; margin-top: 12px; border: 1px solid var(--line-strong); }
 .zone-directory { max-height: 760px; overflow: auto; border-right: 1px solid var(--line-strong); background: #090d0e; }
-.zone-row { position: relative; width: 100%; min-height: 76px; display: grid; grid-template-columns: 42px minmax(160px, 1fr) 112px 48px 42px; gap: 10px; align-items: center; padding: 11px 15px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--text); text-align: left; cursor: pointer; }
+.zone-row { position: relative; width: 100%; min-height: 76px; display: grid; grid-template-columns: 34px minmax(130px, 1fr) 88px 38px 36px; gap: 7px; align-items: center; padding: 11px 12px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--text); text-align: left; cursor: pointer; }
 .zone-row:hover, .zone-row.selected { background: var(--accent-dim); }
 .zone-row.selected::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--accent); }
 .zone-index { color: #536264; font: 11px ui-monospace, monospace; }
@@ -430,3 +487,40 @@ body { color: var(--text); background: var(--bg); }
   .deployment-grid, .deploy-footer { grid-template-columns: 1fr; }
   .compact-heading .zone-network { display: none; }
 }
+
+/* Final reference-matched color layer */
+.app-shell, body { background: #0b0b0c; }
+.sidebar { background: #111112; border-color: #363638; }
+.brand { color: #f1f1ef; }
+.subject-chip { border-color: #3c3c3e; }
+.subject-chip img, .subject-chip > svg { border-color: #67676b; background: #181819; color: var(--accent); }
+.sidebar nav button { color: #8e8e90; }
+.sidebar nav button:hover { border-color: #77777a; background: #1b1b1d; color: #f2f2f0; }
+.sidebar nav button.active { border-color: var(--accent); background: #2c1814; color: #fff; }
+.status-dot, .topbar-status i, .zone-network i { background: var(--accent); box-shadow: 0 0 9px #f0522c88; }
+.topbar { background: #101011f5; border-color: #353537; }
+.notice { background: #28120e; border-color: #743521; }
+.page-heading { border-color: #343436; }
+.page-heading h1 { color: #f2f2f0; }
+.panel, .metric, .mission-card, .experience-console, .zone-console, .coop-intro, .coop-roster, .coop-settings, .coop-status, .coop-complete { background: #151516; border-color: #373739; }
+.metric-grid, .zone-workspace { border-color: #5a5a5d; }
+.metric { background: #161617; border-color: #353537; }
+.metric svg, .item-card > svg, .inventory-row svg { color: #d6d6d3; }
+.primary-action { border-color: var(--accent); background: var(--accent); color: #fff; }
+.primary-action:hover { background: var(--accent-hover); color: #fff; }
+.zone-toolbar { background: #131314; border-color: #4b4b4e; }
+.zone-directory { background: #111112; border-color: #555558; }
+.zone-row { border-color: #323234; }
+.zone-row:hover { background: #1d1d1f; }
+.zone-row.selected { background: #2c1814; }
+.zone-identity small { color: var(--accent); }
+.zone-map { background: #202022; border-color: #525255; }
+.zone-map::before { opacity: .36; background-image: linear-gradient(#3a3a3d 1px, transparent 1px), linear-gradient(90deg, #3a3a3d 1px, transparent 1px); }
+.map-line { background: #77777a; }
+.map-node i { border-color: var(--accent); background: #1a1a1c; box-shadow: 0 0 10px #f0522c88; }
+.unit-choice button.selected, .segmented button.selected, .duration-strip button.selected, .role-grid button.selected { border-color: var(--accent); background: #321813; }
+.coop-intro blockquote { border-color: var(--accent); background: #28130f; }
+.developer-box { background: #111112; }
+.onboarding-intro { background: #151516; border-color: #454548; }
+.onboarding-intro h1 em, .portrait-upload span, .text-button { color: var(--accent); }
+@media (max-width: 720px) { .sidebar { background: #111112f7; } }

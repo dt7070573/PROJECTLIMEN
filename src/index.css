@@ -2,21 +2,21 @@
 
 :root {
   font-family: 'Geist Variable', Pretendard, system-ui, sans-serif;
-  color: #d9e1df;
-  background: #070a0b;
+  color: #eeeeec;
+  background: #0b0b0c;
   font-synthesis: none;
-  --bg: #070a0b;
-  --surface: #0d1213;
-  --surface-2: #12191a;
-  --line: #263133;
-  --line-strong: #445456;
-  --muted: #788789;
-  --text: #d9e1df;
-  --accent: #37c7b3;
-  --accent-hover: #55deca;
-  --accent-dim: #102d2a;
-  --danger: #d85f5a;
-  --warning: #d5a943;
+  --bg: #0b0b0c;
+  --surface: #151516;
+  --surface-2: #1c1c1e;
+  --line: #343436;
+  --line-strong: #66666a;
+  --muted: #8c8988;
+  --text: #eeeeec;
+  --accent: #f0522c;
+  --accent-hover: #ff6841;
+  --accent-dim: #321813;
+  --danger: #ff4936;
+  --warning: #d0a24c;
 }
 
 * { box-sizing: border-box; }
