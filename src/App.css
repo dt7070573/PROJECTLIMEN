@@ -524,3 +524,10 @@ body { color: var(--text); background: var(--bg); }
 .onboarding-intro { background: #151516; border-color: #454548; }
 .onboarding-intro h1 em, .portrait-upload span, .text-button { color: var(--accent); }
 @media (max-width: 720px) { .sidebar { background: #111112f7; } }
+
+@media (min-width: 721px) {
+  .sidebar nav button { font-size: 12px; }
+  .page-heading h1 { font-size: clamp(24px, 2vw, 28px); line-height: 1.08; letter-spacing: -.035em; }
+  .metric > span { font-size: 14px; font-weight: 650; color: #b8b8b6; }
+  .gauge > div span, .stats-panel p span, .body-part-grid span { font-size: 13px; font-weight: 620; color: #b8b8b6; }
+}
