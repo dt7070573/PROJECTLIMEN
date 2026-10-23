@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Activity, Archive, ClipboardList, Dna, LayoutDashboard, RadioTower, Scale, ShoppingBag, UserRound, UsersRound } from 'lucide-react'
+import { Activity, Archive, Dna, LayoutDashboard, Map, RadioTower, Scale, ShoppingBag, UserRound, UsersRound } from 'lucide-react'
 import CharacterCreator from './pages/CharacterCreator.jsx'
 import Home from './pages/Home.jsx'
 import Daily from './pages/Daily.jsx'
@@ -24,8 +24,8 @@ import './components/MissionExperienceLog.css'
 import './pages/License.css'
 
 const NAV = [
-  { id: 'dashboard', label: '상황실', icon: LayoutDashboard }, { id: 'missions', label: '임무 배정', icon: ClipboardList },
-  { id: 'cooperative', label: '공동 임무', icon: RadioTower },
+  { id: 'dashboard', label: '상황실', icon: LayoutDashboard }, { id: 'missions', label: '공동 이상구역', icon: Map },
+  { id: 'cooperative', label: '특수 탐사', icon: RadioTower },
   { id: 'condition', label: '상태 기록', icon: Activity }, { id: 'store', label: '배급 상점', icon: ShoppingBag },
   { id: 'records', label: '기록국', icon: Archive }, { id: 'crew', label: '작업반', icon: UsersRound },
   { id: 'license', label: '라이선스', icon: Scale },
@@ -64,7 +64,7 @@ function App() {
   if (!game.character?.alive) return <CharacterCreator onComplete={handleCreate} legacy={game.legacy} />
   if (game.character.criticalState?.status === 'critical') return <Critical character={game.character} onRescue={handleRescue} onDeath={handleDeath} />
   return <div className="app-shell"><aside className="sidebar"><div className="brand"><Dna size={20} /><span>LIMEN</span></div><div className="subject-chip">{game.character.portrait ? <img src={game.character.portrait} alt="" /> : <UserRound />}<div><strong>{game.character.name}</strong><small>RANK {String(game.character.rank).padStart(2, '0')} · LV.{game.character.level}</small></div></div><nav>{NAV.map(({ id, label, icon: Icon }) => <button className={page === id ? 'active' : ''} key={id} onClick={() => setPage(id)}><Icon size={18} />{label}</button>)}</nav><div className="sidebar-foot"><span className="status-dot" />LOCAL SECURE NODE<small>v0.2 · OFFLINE MVP</small></div></aside>
-    <main className="main-frame"><header className="topbar"><div><span className="eyebrow">PROJECT LIMEN / INTERNAL</span><strong>{NAV.find((item) => item.id === page)?.label}</strong></div><time>{new Date(clock).toLocaleString('ko-KR')}</time></header>{notice && <button className="notice" onClick={() => setNotice('')}>{notice}<span>닫기 ×</span></button>}
+    <main className="main-frame"><header className="topbar"><div><span className="eyebrow">LIMEN / OPERATIONS</span><strong>{NAV.find((item) => item.id === page)?.label}</strong></div><div className="topbar-status"><span><i /> 공동구역 연결</span><time>{new Date(clock).toLocaleString('ko-KR')}</time></div></header>{notice && <button className="notice" onClick={() => setNotice('')}>{notice}<span>×</span></button>}
       {page === 'dashboard' && <Home {...context} onCompleteMission={() => handleCompleteMission(false)} onDeveloperComplete={() => handleCompleteMission(true)} canComplete={game.activeMission ? canCompleteMission(game.activeMission, clock) : false} onNavigate={setPage} onRespondEvent={respondToEvent} onPayroll={handlePayroll} />}
       {page === 'missions' && <Daily {...context} onStartMission={handleStartMission} />}
       {page === 'cooperative' && <Cooperative {...context} onCreateLobby={createCoopLobby} onRole={(roleId) => updateLobby((lobby) => selectCooperativeRole(lobby, game.character.id, roleId), '역할을 변경했습니다.')} onPolicy={(policyId, optionId) => updateLobby((lobby) => setCooperativePolicy(lobby, policyId, optionId))} onFillBots={() => updateLobby(fillLobbyWithSimulatedPlayers, '개발자용 시뮬레이션 참가자 3명이 합류했습니다.')} onLaunch={launchCoop} onAdvance={(mode) => updateCoopRun((run) => advanceCooperativeMission(run, mode), mode === 'next' ? '다음 사건 시각으로 이동했습니다.' : '종료 시각으로 이동했습니다.')} onDecision={(decisionId, optionId) => updateCoopRun((run) => resolveCooperativeDecision(run, decisionId, optionId), '결정이 공동 사건 기록에 반영되었습니다.')} onComplete={completeCoop} onReset={() => persist({ ...game, cooperativeRun: null }, '공동 임무 완료 기록을 닫았습니다.')} />}
