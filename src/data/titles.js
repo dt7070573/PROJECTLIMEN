@@ -11,7 +11,6 @@ export const titles = [
   { id: 'title-archive', name: '금지 문서 열람자', description: '정보 단서를 40개 확보했다.', tone: 'violet', condition: { type: 'intel', value: 40 } },
   { id: 'title-scarred', name: '흉터의 증언', description: '중상을 입고도 귀환했다.', tone: 'red', condition: { type: 'criticalReturns', value: 1 } },
   { id: 'title-unbroken', name: '붕괴하지 않는 자', description: '정신 안정도 20 이하에서 귀환했다.', tone: 'red', condition: { type: 'lowMindReturns', value: 1 } },
-  { id: 'title-anomaly', name: '오염된 관찰자', description: '이상 오염을 안고 임무를 완료했다.', tone: 'violet', condition: { type: 'anomalousReturns', value: 1 } },
   { id: 'title-rank-five', name: '승인 등급 5', description: '사내 5등급에 도달했다.', tone: 'teal', condition: { type: 'rank', value: 5 } },
   { id: 'title-rank-ten', name: '내부 인가자', description: '사내 10등급에 도달했다.', tone: 'gold', condition: { type: 'rank', value: 10 } },
   { id: 'title-rank-twenty', name: '상층 접근자', description: '사내 20등급에 도달했다.', tone: 'gold', condition: { type: 'rank', value: 20 } },

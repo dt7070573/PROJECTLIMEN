@@ -58,7 +58,6 @@ export function consumeItem(character, item) {
   if (item.effects.physical) condition.physical = clamp(condition.physical + item.effects.physical)
   if (item.effects.mental) condition.mental = clamp(condition.mental + item.effects.mental)
   if (item.effects.fatigue) condition.fatigue = clamp(condition.fatigue + item.effects.fatigue)
-  if (item.effects.informationContamination) condition.anomaly = { ...condition.anomaly, informationContamination: clamp(condition.anomaly.informationContamination + item.effects.informationContamination) }
   const inventory = character.inventory.map((owned) => owned.itemId === item.id ? { ...owned, quantity: owned.quantity - 1 } : owned).filter((owned) => owned.quantity > 0)
   return { ...character, condition, inventory }
 }
@@ -81,6 +80,6 @@ export function reserveMissionSupply(character, itemId) {
     .map((entry) => entry.itemId === itemId ? { ...entry, quantity: entry.quantity - 1 } : entry)
     .filter((entry) => entry.quantity > 0)
   const effects = item.effects ?? {}
-  const protection = Number(Boolean(effects.physical)) + Number(Boolean(effects.mental)) + Number(Boolean(effects.informationContamination))
+  const protection = Number(Boolean(effects.physical)) + Number(Boolean(effects.mental))
   return { character: { ...character, inventory }, supply: { itemId, name: item.name, protection } }
 }

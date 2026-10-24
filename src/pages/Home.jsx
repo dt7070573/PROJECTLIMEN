@@ -1,4 +1,4 @@
-import { Activity, ArrowRight, Clock3, Coins, ShieldAlert, Sparkles } from 'lucide-react'
+import { Activity, ArrowRight, Clock3, Coins, Sparkles } from 'lucide-react'
 import { missionProgress } from '../game/mission.js'
 import { payrollStatus } from '../game/employment.js'
 import MissionExperienceLog from '../components/MissionExperienceLog.jsx'
@@ -21,7 +21,7 @@ function Home({ game, clock, onCompleteMission, onDeveloperComplete, canComplete
       <div className="metric-grid">
         <article className="metric"><Activity /><span>신체 상태</span><strong>{condition.physical}<small>%</small></strong><i style={{ width: `${condition.physical}%` }} /></article>
         <article className="metric"><Sparkles /><span>정신 안정</span><strong>{condition.mental}<small>%</small></strong><i style={{ width: `${condition.mental}%` }} /></article>
-        <article className="metric"><ShieldAlert /><span>정보 오염</span><strong>{condition.anomaly.informationContamination}<small>%</small></strong><i className="safe" style={{ width: `${condition.anomaly.informationContamination}%` }} /></article>
+        <article className="metric"><Clock3 /><span>피로</span><strong>{condition.fatigue}<small>%</small></strong><i className="safe" style={{ width: `${condition.fatigue}%` }} /></article>
         <article className="metric"><Coins /><span>보유 크레딧</span><strong>{character.credits}<small>CR</small></strong><i style={{ width: `${Math.min(100, character.credits / 5)}%` }} /></article>
       </div>
 

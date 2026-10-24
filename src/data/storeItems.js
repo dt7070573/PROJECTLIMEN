@@ -10,7 +10,6 @@ export const storeItems = [
   { id: 'cognition-visor', name: '인지 차단 바이저', type: 'equipment', slot: 'protection', price: 460, minRank: 9, description: '시각·언어 오염과 정신 손실을 완화한다.', effects: { mentalGuard: 2 } },
   { id: 'signal-beacon', name: '청록 귀환 신호기', type: 'equipment', slot: 'tool', price: 520, minRank: 12, description: '단계형 탐사에서 부분 실패 확률을 줄인다.', effects: { exploration: 2 } },
   { id: 'containment-rig', name: '격리 절차 보조기', type: 'equipment', slot: 'tool', price: 520, minRank: 12, description: '격리 개체 관리 절차 판정을 보조한다.', effects: { containment: 2 } },
-  { id: 'memory-seal', name: '기억 봉인 캡슐', type: 'consumable', slot: null, price: 180, minRank: 7, description: '정보 오염을 10 낮춘다.', effects: { informationContamination: -10 } },
   { id: 'gift-tea', name: '배급 외 홍차', type: 'gift', slot: null, price: 75, minRank: 2, description: '다른 실험체에게 전달할 수 있는 소형 선물.', effects: { rapport: 1 } },
   { id: 'gift-token', name: '황동 행운패', type: 'gift', slot: null, price: 130, minRank: 5, description: '작업반 동료에게 보내는 기념품.', effects: { rapport: 2 } },
   { id: 'cosmetic-frame', name: '청록 인식표 프레임', type: 'cosmetic', slot: 'frame', price: 240, minRank: 4, description: '프로필 사진 둘레에 청록색 인가 프레임을 표시한다.', effects: {} },

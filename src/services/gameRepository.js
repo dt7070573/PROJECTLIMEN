@@ -1,4 +1,5 @@
 import { normalizeClearance } from '../game/employment.js'
+import { titles } from '../data/contracts/contentAdapter.js'
 
 const STORAGE_KEY = 'project-limen:mvp:v2'
 const LEGACY_KEY = 'project-limen:mvp:v1'
@@ -12,7 +13,10 @@ const migrate = (data) => {
   const base = { ...emptyState(), ...data, version: 2 }
   if (!base.character) return base
   const character = { inventory: [], equipment: {}, progress: {}, ...base.character }
-  return { ...base, character: { ...character, condition: { ...character.condition, bodyParts: { ...defaultBodyParts(), ...(character.condition?.bodyParts ?? {}) } } } }
+  const condition = Object.fromEntries(Object.entries(character.condition ?? {}).filter(([key]) => key !== 'anomaly'))
+  const unlockedTitles = (character.unlockedTitles ?? []).filter((name) => titles.some((title) => title.name === name))
+  const activeTitle = unlockedTitles.includes(character.title) ? character.title : unlockedTitles[0] ?? titles[0].name
+  return { ...base, character: { ...character, title: activeTitle, unlockedTitles, inventory: character.inventory.filter((item) => item.itemId !== 'memory-seal'), condition: { ...condition, bodyParts: { ...defaultBodyParts(), ...(condition.bodyParts ?? {}) } } } }
 }
 
 export class LocalGameRepository {

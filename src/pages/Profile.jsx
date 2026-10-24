@@ -2,9 +2,7 @@ import bodySilhouette from '../assets/limen-body-silhouette.png'
 import { BODY_PART_LABELS, BODY_TYPES, GENDERS, STAT_LABELS } from '../game/character.js'
 import { titles } from '../data/contracts/contentAdapter.js'
 import { TREATMENTS } from '../game/systems.js'
-import { getInnerVoices } from '../game/psyche.js'
 
-const ANOMALY_LABELS = { biologicalIntegrity: '생체 무결성', cognitiveStability: '인지 안정성', memoryContinuity: '기억 연속성', identityCohesion: '정체성 응집도', temporalSync: '시간 동기율', informationContamination: '정보 오염도', entityResonance: '개체 동조도', realityAnchor: '현실 고정도' }
 const BODY_LAYOUT = [['head', 'leftArm', 'leftLeg'], ['torso', 'rightArm', 'rightLeg']]
 
 function Gauge({ label, value, inverse = false }) {
@@ -22,7 +20,6 @@ function BodyCallout({ id, part, side }) {
 
 function Profile({ game, onTreat, onSelectTitle }) {
   const { character } = game
-  const innerVoices = getInnerVoices(character)
   const bodyParts = character.condition.bodyParts
 
   return <section className="page-content profile-page">
@@ -56,8 +53,6 @@ function Profile({ game, onTreat, onSelectTitle }) {
       <div>{Object.entries(character.stats).map(([key, value]) => <p key={key}><span>{STAT_LABELS[key]}</span><strong>{value}</strong><i><b style={{ width: `${value * 10}%` }} /></i></p>)}</div>
     </article>
 
-    <article className="panel anomaly-panel"><div className="panel-title"><h2>이상 건강 지표</h2></div><div className="anomaly-grid">{Object.entries(character.condition.anomaly).map(([key, value]) => <Gauge key={key} label={ANOMALY_LABELS[key]} value={value} inverse={key === 'informationContamination' || key === 'entityResonance'} />)}</div></article>
-    <article className="panel psyche-panel"><div className="panel-title"><h2>내면 발화</h2><span>정신 압력에 따라 편향됨</span></div><div className="voice-grid">{innerVoices.map((voice) => <blockquote className={voice.intrusive ? 'intrusive' : ''} key={voice.id}><div><strong>{voice.name}</strong><span>{STAT_LABELS[voice.stat]} {voice.value}</span></div><p>“{voice.message}”</p>{voice.intrusive && <small>과잉 개입</small>}</blockquote>)}</div></article>
     <div className="condition-actions"><article className="panel"><div className="panel-title"><h2>치료 신청</h2><span>{character.credits} CR</span></div>{game.activeMission && <p className="field-error">임무 진행 중에는 치료할 수 없습니다.</p>}<div className="treatment-list">{TREATMENTS.map((treatment) => { const unavailable = (treatment.id === 'effects' && character.condition.effects.length === 0) || (treatment.id === 'physical' && character.condition.physical >= 100) || (treatment.id === 'mental' && character.condition.mental >= 100) || (treatment.id === 'fatigue' && character.condition.fatigue <= 0); return <div key={treatment.id}><div><strong>{treatment.name}</strong><small>{treatment.description}</small></div><button disabled={Boolean(game.activeMission) || unavailable || character.credits < treatment.cost} onClick={() => onTreat(treatment.id)}>{unavailable ? '치료 불필요' : `${treatment.cost} CR`}</button></div> })}</div></article>
       <article className="panel"><div className="panel-title"><h2>획득 칭호</h2><span>{character.unlockedTitles.length}개</span></div><div className="title-list">{titles.filter((title) => character.unlockedTitles.includes(title.name)).map((title) => <button className={character.title === title.name ? 'active' : ''} key={title.id} onClick={() => onSelectTitle(title.name)}><strong>{title.name}</strong><small>{title.description ?? '획득한 공식 칭호'}</small><span>{character.title === title.name ? '활성' : '선택'}</span></button>)}</div></article></div>
   </section>
